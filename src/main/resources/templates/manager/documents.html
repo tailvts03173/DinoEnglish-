@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/navbar :: head('Quản Lý Kho Tài Liệu - Dino English')}"></head>
+<body class="bg-light">
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<!-- Alerts -->
+<div class="container mt-3" th:if="${successMessage != null}">
+    <div class="alert alert-success alert-dismissible fade show rounded-4 shadow-sm" role="alert">
+        <i class="fa-solid fa-circle-check me-2"></i>
+        <span th:text="${successMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+</div>
+<div class="container mt-3" th:if="${errorMessage != null}">
+    <div class="alert alert-danger alert-dismissible fade show rounded-4 shadow-sm" role="alert">
+        <i class="fa-solid fa-circle-exclamation me-2"></i>
+        <span th:text="${errorMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+</div>
+
+<main class="py-5">
+    <div class="container">
+        <!-- Top bar -->
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+            <div>
+                <a th:href="@{/manager/dashboard}" class="text-decoration-none text-muted small">
+                    <i class="fa-solid fa-arrow-left me-1"></i> Bảng điều khiển Quản lý
+                </a>
+                <h2 class="fw-bold mb-1 mt-1">Quản Lý Kho Tài Liệu & Giáo Trình</h2>
+                <p class="text-secondary small mb-0">Tải lên và chia sẻ file PDF, bài nghe MP3, đề thi ôn tập cho học viên.</p>
+            </div>
+            <div>
+                <button type="button" class="btn btn-dino" data-bs-toggle="collapse" data-bs-target="#addDocCollapse">
+                    <i class="fa-solid fa-upload me-1"></i> Tải Lên Tài Liệu Mới
+                </button>
+            </div>
+        </div>
+
+        <!-- Add Document Collapse Form -->
+        <div class="collapse mb-4" id="addDocCollapse">
+            <div class="card card-dino p-4 border-0 shadow-sm">
+                <h5 class="fw-bold mb-3"><i class="fa-solid fa-cloud-arrow-up text-primary me-2"></i> Thêm Tài Liệu Mới Vào Kho</h5>
+                <form th:action="@{/manager/documents/save}" th:object="${newDoc}" method="post">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold text-secondary">Tên tài liệu *</label>
+                            <input type="text" th:field="*{title}" class="form-control rounded-pill" placeholder="Ví dụ: Bảng Động Từ Bất Quy Tắc" required>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label small fw-bold text-secondary">Định dạng file *</label>
+                            <select th:field="*{fileType}" class="form-select rounded-pill" required>
+                                <option value="PDF">Tài liệu PDF</option>
+                                <option value="AUDIO">File Nghe Audio (MP3)</option>
+                                <option value="EXERCISE">Bài Tập Thực Hành</option>
+                                <option value="DOC">Văn Bản Word (DOC/DOCX)</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label small fw-bold text-secondary">Dung lượng file</label>
+                            <input type="text" th:field="*{fileSize}" class="form-control rounded-pill" placeholder="Ví dụ: 3.2 MB">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold text-secondary">Đường dẫn file (Link tải về) *</label>
+                            <input type="text" th:field="*{fileUrl}" class="form-control rounded-pill" placeholder="https://..." required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold text-secondary">Gắn với khóa học (tùy chọn)</label>
+                            <select name="courseId" class="form-select rounded-pill">
+                                <option value="">-- Dành cho tất cả khóa học --</option>
+                                <option th:each="c : ${courses}" th:value="${c.id}" th:text="${c.title}">Khóa học A1</option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label small fw-bold text-secondary">Mô tả tóm tắt tài liệu</label>
+                            <textarea th:field="*{description}" class="form-control rounded-3" rows="2" placeholder="Tóm lược nội dung và hướng dẫn học..."></textarea>
+                        </div>
+                    </div>
+                    <div class="mt-4 text-end">
+                        <button type="submit" class="btn btn-dino">
+                            <i class="fa-solid fa-floppy-disk me-1"></i> Lưu Tài Liệu
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Documents Table -->
+        <div class="card card-dino p-4 border-0 shadow-sm">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle small mb-0">
+                    <thead class="table-light">
+                    <tr>
+                        <th>Loại File</th>
+                        <th>Tên Tài Liệu</th>
+                        <th>Khóa Học Liên Quan</th>
+                        <th>Dung Lượng</th>
+                        <th>Ngày Đăng</th>
+                        <th class="text-end">Thao Tác</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="d : ${documents}">
+                        <td>
+                            <i th:class="'fa-solid ' + ${d.getIconClass()} + ' fs-4'"></i>
+                            <span class="badge bg-light text-dark border ms-1" th:text="${d.fileType}">PDF</span>
+                        </td>
+                        <td>
+                            <div class="fw-bold text-dark" th:text="${d.title}">Tên tài liệu</div>
+                            <div class="text-muted small text-truncate" style="max-width: 300px;" th:text="${d.description}">Mô tả...</div>
+                        </td>
+                        <td>
+                            <span th:if="${d.course != null}" class="badge bg-success-subtle text-success" th:text="${d.course.title}">Khóa học</span>
+                            <span th:if="${d.course == null}" class="badge bg-light text-muted border">Tất cả</span>
+                        </td>
+                        <td th:text="${d.fileSize != null ? d.fileSize : '---'}">2.4 MB</td>
+                        <td class="text-muted" th:text="${#temporals.format(d.uploadedAt, 'dd/MM/yyyy')}">01/01/2026</td>
+                        <td class="text-end">
+                            <div class="d-inline-flex gap-1">
+                                <a th:href="${d.fileUrl}" target="_blank" class="btn btn-sm btn-outline-primary rounded-pill" title="Xem/Tải">
+                                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                                </a>
+                                <form th:action="@{'/manager/documents/' + ${d.id} + '/delete'}" method="post" class="d-inline" onsubmit="return confirm('Bạn có chắc muốn xóa tài liệu này không?');">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill" title="Xóa">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div th:if="${#lists.isEmpty(documents)}" class="text-center py-5 text-muted">
+                <i class="fa-solid fa-folder-open fs-1 mb-2"></i>
+                <h5>Kho tài liệu đang trống!</h5>
+                <p class="small">Bấm vào nút <strong>"Tải Lên Tài Liệu Mới"</strong> để tải lên PDF hoặc file nghe MP3.</p>
+            </div>
+        </div>
+    </div>
+</main>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>

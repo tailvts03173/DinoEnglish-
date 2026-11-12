@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "ESNext",
+    "checkJs": false,
+    "paths": { "three": ["https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"] }
+  },
+  "include": ["src/main/resources/static/js/**/*.js"]
+}

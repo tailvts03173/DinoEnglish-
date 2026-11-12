@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/navbar :: head(${isNew ? 'Thêm Bài Học Mới' : 'Chỉnh Sửa Bài Học'} + ' - Dino English')}"></head>
+<body class="bg-light">
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<main class="py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <!-- Top link -->
+                <div class="mb-4">
+                    <a th:href="@{'/manager/courses/' + ${course.id} + '/lessons'}" class="text-decoration-none text-muted small">
+                        <i class="fa-solid fa-arrow-left me-1"></i> Quay lại Danh sách bài học của khóa
+                    </a>
+                </div>
+
+                <div class="card card-dino p-4 p-md-5 border-0 shadow-sm">
+                    <h3 class="fw-bold mb-1" th:text="${isNew ? 'Soạn Bài Học Mới' : 'Chỉnh Sửa Bài Học'}">Bài Học</h3>
+                    <p class="text-secondary small mb-4">Khóa học: <strong th:text="${course.title}">Tên Khóa</strong></p>
+
+                    <form th:action="@{/manager/lessons/save}" th:object="${lesson}" method="post">
+                        <input type="hidden" th:field="*{id}">
+                        <input type="hidden" name="courseId" th:value="${course.id}">
+
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold text-secondary">Tiêu đề bài học *</label>
+                            <input type="text" th:field="*{title}" class="form-control rounded-pill py-2" placeholder="Ví dụ: Bài 1: Chủ Đề Động Vật Thân Quen" required>
+                        </div>
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold text-secondary">Phân loại bài học *</label>
+                                <select th:field="*{lessonType}" class="form-select rounded-pill py-2" required>
+                                    <option th:each="lt : ${lessonTypes}" th:value="${lt.name()}" th:text="${lt.title}">Từ vựng</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold text-secondary">Thứ tự bài học *</label>
+                                <input type="number" th:field="*{orderIndex}" class="form-control rounded-pill py-2" min="1" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold text-secondary">Thưởng XP hoàn thành *</label>
+                                <input type="number" th:field="*{xpReward}" class="form-control rounded-pill py-2" min="5" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold text-secondary">Mô tả tóm tắt bài học</label>
+                            <input type="text" th:field="*{description}" class="form-control rounded-pill py-2" placeholder="Tóm tắt nội dung chính trong 1-2 câu...">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold text-secondary">Nội dung chi tiết bài học (Lý thuyết / Ngữ pháp / Ghi chú)</label>
+                            <textarea th:field="*{content}" class="form-control rounded-4" rows="6" placeholder="Nhập lý thuyết ngữ pháp, hội thoại hoặc ghi chú dành cho học viên..."></textarea>
+                        </div>
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold text-secondary">Đường dẫn file Audio (nếu có)</label>
+                                <input type="text" th:field="*{audioUrl}" class="form-control rounded-pill py-2" placeholder="https://...">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold text-secondary">Đường dẫn Video bài giảng (nếu có)</label>
+                                <input type="text" th:field="*{videoUrl}" class="form-control rounded-pill py-2" placeholder="https://youtube.com/...">
+                            </div>
+                        </div>
+
+                        <div class="mb-4 form-check form-switch">
+                            <input class="form-check-input" type="checkbox" th:field="*{active}" id="activeLessonSwitch">
+                            <label class="form-check-label small fw-bold text-secondary" for="activeLessonSwitch">Hiển thị bài học này cho học viên</label>
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2">
+                            <a th:href="@{'/manager/courses/' + ${course.id} + '/lessons'}" class="btn btn-light rounded-pill px-4">Hủy bỏ</a>
+                            <button type="submit" class="btn btn-dino px-4">
+                                <i class="fa-solid fa-floppy-disk me-1"></i> Lưu Bài Học
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>

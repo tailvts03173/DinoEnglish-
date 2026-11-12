@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body th:fragment="footer">
+<footer class="footer-dino">
+    <div class="container">
+        <div class="row g-4 mb-4">
+            <div class="col-lg-4">
+                <div class="d-flex align-items-center gap-2 mb-3">
+                    <img th:src="@{/images/dino-logo.png}" alt="Dino Logo" style="height: 48px;">
+                    <span class="brand-font fs-4 text-white">Dino English</span>
+                </div>
+                <p class="small text-secondary">
+                    Nền tảng học tiếng Anh trực tuyến thế hệ mới, kết hợp phương pháp học trực quan, trò chơi hóa và hệ thống duy trì chuỗi học (Streak) giúp bạn tự tin chinh phục tiếng Anh mỗi ngày!
+                </p>
+                <div class="d-flex gap-3 fs-5">
+                    <a href="#" class="text-secondary"><i class="fa-brands fa-facebook"></i></a>
+                    <a href="#" class="text-secondary"><i class="fa-brands fa-youtube"></i></a>
+                    <a href="#" class="text-secondary"><i class="fa-brands fa-tiktok"></i></a>
+                    <a href="#" class="text-secondary"><i class="fa-brands fa-discord"></i></a>
+                </div>
+            </div>
+
+            <div class="col-6 col-lg-2">
+                <h6 class="text-white fw-bold mb-3">Lộ Trình Học</h6>
+                <ul class="list-unstyled small d-flex flex-column gap-2">
+                    <li><a th:href="@{/courses(level='BEGINNER_A1')}">Beginner (A1)</a></li>
+                    <li><a th:href="@{/courses(level='ELEMENTARY_A2')}">Elementary (A2)</a></li>
+                    <li><a th:href="@{/courses(level='INTERMEDIATE_B1')}">Intermediate (B1)</a></li>
+                    <li><a th:href="@{/courses(level='ADVANCED_B2')}">Advanced (B2)</a></li>
+                </ul>
+            </div>
+
+            <div class="col-6 col-lg-3">
+                <h6 class="text-white fw-bold mb-3">Tính Năng Nổi Bật</h6>
+                <ul class="list-unstyled small d-flex flex-column gap-2">
+                    <li><a th:href="@{/user/streak}"><i class="fa-solid fa-fire text-danger me-1"></i> Chuỗi ngày học Streak</a></li>
+                    <li><a th:href="@{/user/leaderboard}"><i class="fa-solid fa-trophy text-warning me-1"></i> Bảng xếp hạng vinh danh</a></li>
+                    <li><a th:href="@{/user/documents}"><i class="fa-solid fa-file-pdf text-info me-1"></i> Kho tài liệu & Giáo trình</a></li>
+                    <li><a th:href="@{/courses}"><i class="fa-solid fa-spell-check text-success me-1"></i> Từ vựng & Phát âm chuẩn</a></li>
+                </ul>
+            </div>
+
+            <div class="col-lg-3">
+                <h6 class="text-white fw-bold mb-3">Hỗ Trợ & Liên Hệ</h6>
+                <p class="small text-secondary mb-2"><i class="fa-solid fa-envelope me-2"></i> support@dinoenglish.edu.vn</p>
+                <p class="small text-secondary mb-2"><i class="fa-solid fa-phone me-2"></i> 0987 654 321</p>
+                <p class="small text-secondary"><i class="fa-solid fa-location-dot me-2"></i> Hà Nội, Việt Nam</p>
+            </div>
+        </div>
+
+        <hr class="border-secondary my-4">
+
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-center small text-secondary">
+            <div>&copy; 2026 Dino English. All rights reserved. Let's Learn English together! 🦖💚</div>
+            <div class="d-flex gap-3 mt-2 mt-md-0">
+                <a th:href="@{/about}" class="text-secondary">Giới thiệu</a>
+                <a th:href="@{/contact}" class="text-secondary">Điều khoản</a>
+                <a th:href="@{/contact}" class="text-secondary">Chính sách bảo mật</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- Bootstrap Bundle JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Dino JS -->
+<script th:src="@{/js/dino.js}"></script>
+<!-- three.js: hiệu ứng 3D toàn trang (import map phải đứng trước module) -->
+<script type="importmap">
+{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js" } }
+</script>
+<script type="module" th:src="@{/js/dino-3d.js}"></script>
+</body>
+</html>

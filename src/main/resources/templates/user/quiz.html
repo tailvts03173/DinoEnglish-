@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/navbar :: head('Làm Bài Trắc Nghiệm - Dino English')}"></head>
+<body class="bg-light">
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<main class="py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-9">
+                <!-- Header Card -->
+                <div class="card card-dino p-4 mb-4 border-0 shadow-sm" style="background: linear-gradient(135deg, #fefce8, #fef08a);">
+                    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+                        <div>
+                            <span class="badge bg-warning text-dark px-3 py-1 rounded-pill mb-2">
+                                <i class="fa-solid fa-star me-1"></i> Bài Kiểm Tra Tính Điểm
+                            </span>
+                            <h3 class="fw-bold mb-1" th:text="${lesson.title}">Bài kiểm tra trắc nghiệm</h3>
+                            <p class="text-secondary small mb-0">Khóa học: <strong th:text="${course.title}">Tên Khóa</strong></p>
+                        </div>
+                        <div class="text-md-end">
+                            <span class="badge bg-white text-dark border p-2 fs-6">
+                                <i class="fa-solid fa-list-check text-primary me-1"></i> <span th:text="${questions.size()}">5</span> câu hỏi
+                            </span>
+                            <div class="small text-muted mt-1">Đạt từ 60% để vượt qua</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quiz Form -->
+                <form th:action="@{'/user/quiz/' + ${lesson.id} + '/submit'}" method="post">
+                    <div class="d-flex flex-column gap-4">
+                        <div th:each="q, iter : ${questions}" class="card card-dino p-4 border-0 shadow-sm">
+                            <div class="d-flex align-items-start gap-3 mb-3">
+                                <span class="badge bg-dino-soft text-dino-dark-green fs-6 px-3 py-2 rounded-pill"
+                                      th:text="'Câu ' + ${iter.index + 1}">Câu 1</span>
+                                <h5 class="fw-bold mb-0 pt-1" th:text="${q.question}">Nội dung câu hỏi ở đây?</h5>
+                            </div>
+
+                            <div class="row g-3">
+                                <!-- Option A -->
+                                <div class="col-md-6">
+                                    <label class="quiz-option-card">
+                                        <input type="radio" class="visually-hidden" th:name="'question_' + ${q.id}" value="A" required>
+                                        <div class="quiz-label d-flex align-items-center gap-2">
+                                            <span class="badge bg-light text-dark border rounded-circle p-2" style="width: 32px; height: 32px;">A</span>
+                                            <span th:text="${q.optionA}">Lựa chọn A</span>
+                                        </div>
+                                    </label>
+                                </div>
+
+                                <!-- Option B -->
+                                <div class="col-md-6">
+                                    <label class="quiz-option-card">
+                                        <input type="radio" class="visually-hidden" th:name="'question_' + ${q.id}" value="B">
+                                        <div class="quiz-label d-flex align-items-center gap-2">
+                                            <span class="badge bg-light text-dark border rounded-circle p-2" style="width: 32px; height: 32px;">B</span>
+                                            <span th:text="${q.optionB}">Lựa chọn B</span>
+                                        </div>
+                                    </label>
+                                </div>
+
+                                <!-- Option C -->
+                                <div class="col-md-6">
+                                    <label class="quiz-option-card">
+                                        <input type="radio" class="visually-hidden" th:name="'question_' + ${q.id}" value="C">
+                                        <div class="quiz-label d-flex align-items-center gap-2">
+                                            <span class="badge bg-light text-dark border rounded-circle p-2" style="width: 32px; height: 32px;">C</span>
+                                            <span th:text="${q.optionC}">Lựa chọn C</span>
+                                        </div>
+                                    </label>
+                                </div>
+
+                                <!-- Option D -->
+                                <div class="col-md-6">
+                                    <label class="quiz-option-card">
+                                        <input type="radio" class="visually-hidden" th:name="'question_' + ${q.id}" value="D">
+                                        <div class="quiz-label d-flex align-items-center gap-2">
+                                            <span class="badge bg-light text-dark border rounded-circle p-2" style="width: 32px; height: 32px;">D</span>
+                                            <span th:text="${q.optionD}">Lựa chọn D</span>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="text-center mt-5">
+                        <button type="submit" class="btn btn-dino btn-lg px-5 py-3 shadow">
+                            <i class="fa-solid fa-paper-plane me-2"></i> Nộp Bài Kiểm Tra & Xem Kết Quả
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>

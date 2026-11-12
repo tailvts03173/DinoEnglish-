@@ -1,0 +1,487 @@
+/* ==========================================================================
+   Dino English - Custom Cute Theme CSS
+   ========================================================================== */
+
+/* Local Fonts Setup: Baloo 2 (Headings) & Nunito (Body)
+   Full Vietnamese Unicode & Diacritics Support */
+@font-face {
+  font-family: 'Baloo 2';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('../fonts/Baloo2-SemiBold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Baloo 2';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('../fonts/Baloo2-Bold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Baloo 2';
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url('../fonts/Baloo2-ExtraBold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Nunito';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../fonts/Nunito-Regular.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Nunito';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('../fonts/Nunito-SemiBold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Nunito';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('../fonts/Nunito-Bold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Nunito';
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url('../fonts/Nunito-ExtraBold.ttf') format('truetype');
+}
+
+:root {
+  --dino-green: #22c55e;
+  --dino-green-hover: #16a34a;
+  --dino-green-dark: #15803d;
+  --dino-green-light: #ecfdf5;
+  --dino-green-soft: #dcfce7;
+  --dino-yellow: #facc15;
+  --dino-yellow-hover: #eab308;
+  --dino-orange: #fb923c;
+  --dino-dark: #0f172a;
+  --dino-card-bg: #ffffff;
+  --dino-border: #e2e8f0;
+  --dino-radius: 1.25rem;
+  --dino-radius-sm: 0.75rem;
+  --dino-shadow: 0 10px 25px -5px rgba(34, 197, 94, 0.12), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+  --dino-shadow-lg: 0 20px 30px -10px rgba(34, 197, 94, 0.2);
+  --font-display: 'Baloo 2', 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-body: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: #f8fafc;
+  color: #334155;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  line-height: 1.6;
+}
+
+main {
+  flex: 1 0 auto;
+}
+
+button, input, optgroup, select, textarea {
+  font-family: inherit;
+}
+
+/* Typography & Badges */
+h1, h2, h3, h4, h5, h6, .brand-font {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.35;
+}
+
+.text-dino-green { color: var(--dino-green) !important; }
+.text-dino-dark-green { color: var(--dino-green-dark) !important; }
+.bg-dino-green { background-color: var(--dino-green) !important; color: white !important; }
+.bg-dino-soft { background-color: var(--dino-green-soft) !important; }
+.bg-dino-light { background-color: var(--dino-green-light) !important; }
+
+/* Navbar */
+.navbar-dino {
+  background: white;
+  border-bottom: 2px solid #e2e8f0;
+  padding: 0.75rem 1rem;
+}
+
+.navbar-brand-logo {
+  height: 48px;
+  width: auto;
+  object-fit: contain;
+  transition: transform 0.2s ease;
+}
+
+.navbar-brand:hover .navbar-brand-logo {
+  transform: rotate(-4deg) scale(1.05);
+}
+
+.nav-link {
+  font-weight: 700;
+  color: #475569;
+  border-radius: 9999px;
+  padding: 0.5rem 1rem !important;
+  transition: all 0.2s ease;
+}
+
+.nav-link:hover, .nav-link.active {
+  color: var(--dino-green-dark);
+  background: var(--dino-green-soft);
+}
+
+/* Buttons */
+.btn-dino {
+  background: linear-gradient(135deg, var(--dino-green), var(--dino-green-hover));
+  color: white;
+  font-weight: 700;
+  border-radius: 9999px;
+  padding: 0.65rem 1.5rem;
+  border: none;
+  box-shadow: 0 4px 14px rgba(34, 197, 94, 0.35);
+  transition: all 0.2s ease;
+}
+
+.btn-dino:hover {
+  background: linear-gradient(135deg, var(--dino-green-hover), var(--dino-green-dark));
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(34, 197, 94, 0.45);
+}
+
+.btn-dino-yellow {
+  background: linear-gradient(135deg, var(--dino-yellow), var(--dino-yellow-hover));
+  color: #713f12;
+  font-weight: 700;
+  border-radius: 9999px;
+  padding: 0.65rem 1.5rem;
+  border: none;
+  box-shadow: 0 4px 14px rgba(234, 179, 8, 0.35);
+  transition: all 0.2s ease;
+}
+
+.btn-dino-yellow:hover {
+  color: #713f12;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(234, 179, 8, 0.45);
+}
+
+.btn-dino-outline {
+  background: transparent;
+  color: var(--dino-green-dark);
+  border: 2px solid var(--dino-green);
+  font-weight: 700;
+  border-radius: 9999px;
+  padding: 0.6rem 1.4rem;
+  transition: all 0.2s ease;
+}
+
+.btn-dino-outline:hover {
+  background: var(--dino-green-soft);
+  color: var(--dino-green-dark);
+}
+
+/* Cards */
+.card-dino {
+  background: white;
+  border-radius: var(--dino-radius);
+  border: 1px solid #e2e8f0;
+  box-shadow: var(--dino-shadow);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+.card-dino:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--dino-shadow-lg);
+  border-color: #86efac;
+}
+
+/* Hero Section */
+.hero-dino {
+  background: linear-gradient(180deg, #ecfdf5 0%, #f8fafc 100%);
+  padding: 4rem 0 3rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-mascot-img {
+  max-height: 380px;
+  width: auto;
+  filter: drop-shadow(0 15px 25px rgba(34, 197, 94, 0.25));
+  animation: floatDino 4s ease-in-out infinite;
+}
+
+@keyframes floatDino {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+/* Streak & XP Badges */
+.streak-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: #fff7ed;
+  border: 1.5px solid #fdba74;
+  color: #c2410c;
+  font-weight: 800;
+  padding: 0.35rem 0.85rem;
+  border-radius: 9999px;
+  font-size: 0.95rem;
+}
+
+.streak-pill i {
+  color: #ea580c;
+  animation: flamePulse 1.5s infinite;
+}
+
+@keyframes flamePulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+}
+
+.xp-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: #fefce8;
+  border: 1.5px solid #fde047;
+  color: #a16207;
+  font-weight: 800;
+  padding: 0.35rem 0.85rem;
+  border-radius: 9999px;
+  font-size: 0.95rem;
+}
+
+/* Flashcard Styles */
+.flashcard-container {
+  perspective: 1000px;
+  margin: 1.5rem auto;
+  max-width: 520px;
+  height: 340px;
+}
+
+.flashcard {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  border-radius: var(--dino-radius);
+  box-shadow: var(--dino-shadow-lg);
+}
+
+.flashcard.flipped {
+  transform: rotateY(180deg);
+}
+
+.flashcard-face {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: var(--dino-radius);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background: white;
+  border: 2px solid #bbf7d0;
+}
+
+.flashcard-back {
+  transform: rotateY(180deg);
+  background: #f0fdf4;
+}
+
+/* Quiz option selection */
+.quiz-option-card {
+  display: block;
+  background: white;
+  border: 2px solid #e2e8f0;
+  border-radius: var(--dino-radius-sm);
+  padding: 1rem 1.25rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+.quiz-option-card:hover {
+  background: #f8fafc;
+  border-color: var(--dino-green);
+  transform: translateX(4px);
+}
+
+.quiz-option-card input[type="radio"]:checked + .quiz-label {
+  color: var(--dino-green-dark);
+}
+
+.quiz-option-card.selected {
+  background: var(--dino-green-light);
+  border-color: var(--dino-green);
+  box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.2);
+}
+
+/* TTS Speaker Button */
+.btn-speaker {
+  background: #dcfce7;
+  color: #15803d;
+  border: none;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.btn-speaker:hover {
+  background: #22c55e;
+  color: white;
+  transform: scale(1.1);
+}
+
+/* Badge showcase */
+.badge-circle {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  margin: 0 auto 0.75rem;
+  background: linear-gradient(135deg, #fef08a, #fde047);
+  box-shadow: 0 4px 10px rgba(234, 179, 8, 0.3);
+}
+
+/* Footer */
+.footer-dino {
+  background: #0f172a;
+  color: #94a3b8;
+  padding: 3rem 0 1.5rem;
+  margin-top: 4rem;
+}
+
+.footer-dino h5 {
+  color: white;
+}
+
+.footer-dino a {
+  color: #cbd5e1;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.footer-dino a:hover {
+  color: var(--dino-green);
+}
+
+
+/* ==========================================================================
+   3D (three.js)
+   ========================================================================== */
+.hero-3d {
+  position: relative;
+  width: 100%;
+  height: 440px;
+  cursor: grab;
+  touch-action: pan-y;
+}
+.hero-3d .three-canvas,
+.cta-3d .three-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.hero-3d .hero-mascot-img { position: absolute; inset: 0; margin: auto; }
+.hero-3d.ready .hero-mascot-img { display: none; }
+
+.cta-3d-wrap { position: relative; overflow: hidden; }
+.cta-3d { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+
+@media (max-width: 991.98px) {
+  .hero-3d { height: 340px; }
+}
+
+/* --- Toàn trang 3D --- */
+#bg-3d { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+#bg-3d .three-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+
+body.has-3d-bg { background: linear-gradient(180deg, #f0fdf4 0%, #f8fafc 45%, #ecfdf5 100%) fixed; }
+body.has-3d-bg > nav,
+body.has-3d-bg > main,
+body.has-3d-bg > footer,
+body.has-3d-bg > div:not(#bg-3d):not(#dino-mascot) { position: relative; z-index: 1; }
+body.has-3d-bg .navbar-dino { z-index: 1020; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(8px); }
+body.has-3d-bg .hero-dino { background: linear-gradient(180deg, rgba(236, 253, 245, 0.55), rgba(248, 250, 252, 0)); }
+body.has-3d-bg main .bg-white { background-color: rgba(255, 255, 255, 0.78) !important; backdrop-filter: blur(6px); }
+body.has-3d-bg main .bg-light { background-color: rgba(248, 250, 252, 0.7) !important; }
+
+/* Mascot góc màn hình */
+#dino-mascot {
+  position: fixed;
+  right: 10px;
+  bottom: 6px;
+  width: 190px;
+  height: 170px;
+  z-index: 1030;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+#dino-mascot .three-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+@media (max-width: 575.98px) { #dino-mascot { display: none; } }
+
+/* Thẻ nghiêng 3D + ánh sáng theo con trỏ */
+.tilt-3d { transform-style: preserve-3d; will-change: transform; position: relative; }
+.tilt-3d.card-dino:hover { transform: none; }
+.tilt-3d::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  background: radial-gradient(circle at var(--gx, 50%) var(--gy, 50%), rgba(255, 255, 255, 0.45), transparent 55%);
+}
+.tilt-3d:hover::after { opacity: 1; }
+
+/* Nút nổi khối 3D */
+.btn-dino, .btn-dino-yellow {
+  box-shadow: 0 5px 0 var(--dino-green-dark), 0 10px 18px rgba(34, 197, 94, 0.35);
+  transform: translateY(0);
+}
+.btn-dino-yellow { box-shadow: 0 5px 0 #a16207, 0 10px 18px rgba(234, 179, 8, 0.35); }
+.btn-dino:hover { transform: translateY(-2px); box-shadow: 0 7px 0 var(--dino-green-dark), 0 14px 22px rgba(34, 197, 94, 0.4); }
+.btn-dino-yellow:hover { transform: translateY(-2px); box-shadow: 0 7px 0 #a16207, 0 14px 22px rgba(234, 179, 8, 0.4); }
+.btn-dino:active, .btn-dino-yellow:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--dino-green-dark); }
+.btn-dino-yellow:active { box-shadow: 0 1px 0 #a16207; }
+
+/* Flashcard: nghiêng nhẹ khi rê chuột */
+.flashcard-container { perspective: 1100px; }
+.flashcard:not(.flipped):hover { transform: rotateX(4deg) rotateY(-6deg) scale(1.02); }

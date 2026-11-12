@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/navbar :: head('Giới Thiệu - Dino English')}"></head>
+<body class="bg-light">
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<main class="py-5">
+    <div class="container">
+        <div class="row align-items-center g-5 mb-5">
+            <div class="col-lg-6">
+                <span class="badge bg-dino-soft text-dino-dark-green px-3 py-2 rounded-pill fw-bold">Câu Chuyện Thương Hiệu</span>
+                <h1 class="fw-bold mt-2 mb-3">Về Dino English — Học Tiếng Anh Mỗi Ngày</h1>
+                <p class="lead text-secondary">
+                    Dino English được sinh ra với sứ mệnh biến hành trình học tiếng Anh từ một áp lực trở thành một trò chơi khám phá thú vị và tràn ngập niềm vui.
+                </p>
+                <p class="text-secondary">
+                    Với hình tượng chú khủng long <strong>Dino</strong> ngộ nghĩnh, đeo tai nghe, tay cầm sách và đội mũ cử nhân, chúng tôi tin rằng bất kỳ ai — từ người mới bắt đầu mất gốc cho đến các bạn muốn rèn luyện chuyên sâu — đều có thể chinh phục ngoại ngữ nếu duy trì thói quen học tập đều đặn mỗi ngày (Streak).
+                </p>
+                <div class="d-flex gap-3 mt-4">
+                    <a th:href="@{/courses}" class="btn btn-dino">Khám Phá Các Khóa Học</a>
+                    <a th:href="@{/register}" class="btn btn-dino-outline">Gia Nhập Cộng Đồng Dino</a>
+                </div>
+            </div>
+            <div class="col-lg-6 text-center">
+                <img th:src="@{/images/dino-logo.png}" alt="Dino Mascot" class="img-fluid" style="max-height: 380px;">
+            </div>
+        </div>
+
+        <div class="row g-4 mt-2">
+            <div class="col-md-4">
+                <div class="card card-dino p-4 h-100 border-0 shadow-sm text-center">
+                    <div class="rounded-circle bg-success-subtle text-success p-3 mx-auto mb-3" style="width: 60px; height: 60px;">
+                        <i class="fa-solid fa-bullseye fs-3"></i>
+                    </div>
+                    <h5 class="fw-bold">Mục Tiêu Rõ Ràng</h5>
+                    <p class="small text-secondary mb-0">Hệ thống bài học chia nhỏ theo từng chủ đề thực tế, học xong là có thể áp dụng được ngay.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card card-dino p-4 h-100 border-0 shadow-sm text-center">
+                    <div class="rounded-circle bg-warning-subtle text-warning p-3 mx-auto mb-3" style="width: 60px; height: 60px;">
+                        <i class="fa-solid fa-fire fs-3"></i>
+                    </div>
+                    <h5 class="fw-bold">Duy Trì Động Lực</h5>
+                    <p class="small text-secondary mb-0">Cơ chế giữ chuỗi ngày học Streak kết hợp Bảng xếp hạng giúp bạn không bao giờ bỏ cuộc giữa chừng.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card card-dino p-4 h-100 border-0 shadow-sm text-center">
+                    <div class="rounded-circle bg-primary-subtle text-primary p-3 mx-auto mb-3" style="width: 60px; height: 60px;">
+                        <i class="fa-solid fa-heart fs-3"></i>
+                    </div>
+                    <h5 class="fw-bold">Hoàn Toàn Thân Thiện</h5>
+                    <p class="small text-secondary mb-0">Giao diện tươi sáng, âm thanh phát âm bản xứ chuẩn xác và tích hợp mượt mà trên mọi thiết bị.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/navbar :: head('Đăng Ký - Dino English')}"></head>
+<body class="bg-light">
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<main class="py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+                <div class="card card-dino p-4 p-md-5 border-0 shadow">
+                    <!-- Dino Mascot Brand -->
+                    <div class="text-center mb-4">
+                        <img th:src="@{/images/dino-logo.png}" alt="Dino Logo" style="height: 80px;" class="mb-2">
+                        <h2 class="fw-bold mb-1">Đăng Ký Tài Khoản</h2>
+                        <p class="text-secondary small">Gia nhập đại gia đình học viên Dino English hoàn toàn miễn phí!</p>
+                    </div>
+
+                    <!-- Alerts -->
+                    <div th:if="${errorMessage != null}" class="alert alert-danger alert-dismissible fade show rounded-4 small" role="alert">
+                        <i class="fa-solid fa-circle-exclamation me-2"></i>
+                        <span th:text="${errorMessage}"></span>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+
+                    <!-- Form -->
+                    <form th:action="@{/register}" method="post">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="username" class="form-label fw-bold small text-secondary">Tên đăng nhập *</label>
+                                <input type="text" class="form-control rounded-pill py-2" id="username" name="username"
+                                       th:value="${username}" placeholder="Ví dụ: dino_user" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="fullName" class="form-label fw-bold small text-secondary">Họ và tên *</label>
+                                <input type="text" class="form-control rounded-pill py-2" id="fullName" name="fullName"
+                                       th:value="${fullName}" placeholder="Ví dụ: Nguyễn Văn A" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="email" class="form-label fw-bold small text-secondary">Địa chỉ Email *</label>
+                                <input type="email" class="form-control rounded-pill py-2" id="email" name="email"
+                                       th:value="${email}" placeholder="email@example.com" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="phone" class="form-label fw-bold small text-secondary">Số điện thoại</label>
+                                <input type="text" class="form-control rounded-pill py-2" id="phone" name="phone"
+                                       th:value="${phone}" placeholder="0987654321">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="password" class="form-label fw-bold small text-secondary">Mật khẩu *</label>
+                                <input type="password" class="form-control rounded-pill py-2" id="password" name="password"
+                                       placeholder="Tối thiểu 6 ký tự" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="confirmPassword" class="form-label fw-bold small text-secondary">Xác nhận mật khẩu *</label>
+                                <input type="password" class="form-control rounded-pill py-2" id="confirmPassword" name="confirmPassword"
+                                       placeholder="Nhập lại mật khẩu" required>
+                            </div>
+                        </div>
+
+                        <div class="mt-4">
+                            <button type="submit" class="btn btn-dino w-100 py-2">
+                                <i class="fa-solid fa-user-plus me-2"></i> Tạo Tài Khoản Học Viên
+                            </button>
+                        </div>
+                    </form>
+
+                    <div class="text-center mt-4 small text-secondary">
+                        Đã có tài khoản?
+                        <a th:href="@{/login}" class="fw-bold text-dino-green text-decoration-none">Đăng nhập</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>

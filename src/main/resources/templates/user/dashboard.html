@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/navbar :: head('Bàn Học Cá Nhân - Dino English')}"></head>
+<body class="bg-light">
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<main class="py-5">
+    <div class="container">
+        <!-- Student Header Banner -->
+        <div class="card card-dino p-4 p-md-5 mb-5 border-0 shadow-sm" style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);">
+            <div class="row align-items-center g-4">
+                <div class="col-md-8 d-flex align-items-center gap-4">
+                    <div class="position-relative">
+                        <img th:src="${user.avatarUrl != null ? user.avatarUrl : '/images/dino-logo.png'}"
+                             alt="Avatar" class="rounded-circle border border-4 border-white shadow" style="width: 96px; height: 96px; object-fit: cover;">
+                        <span class="position-absolute bottom-0 end-0 badge rounded-pill bg-success p-2">
+                            <i class="fa-solid fa-graduation-cap"></i>
+                        </span>
+                    </div>
+                    <div>
+                        <div class="d-flex align-items-center gap-2 mb-1">
+                            <h2 class="fw-bold mb-0" th:text="${user.fullName}">Tên Học Viên</h2>
+                            <span class="badge bg-white text-dino-dark-green border shadow-sm" th:text="${user.getDinoRank()}">Baby Dino</span>
+                        </div>
+                        <p class="text-secondary small mb-2"><i class="fa-regular fa-envelope me-1"></i> <span th:text="${user.email}">email@example.com</span></p>
+
+                        <!-- Level Progress Bar -->
+                        <div style="max-width: 320px;">
+                            <div class="d-flex justify-content-between small fw-bold mb-1">
+                                <span class="text-dino-dark-green">Cấp độ <span th:text="${user.currentLevel}">1</span></span>
+                                <span class="text-muted"><span th:text="${user.totalXp}">0</span> / <span th:text="${user.getXpForNextLevel()}">150</span> XP</span>
+                            </div>
+                            <div class="progress" style="height: 10px; border-radius: 9999px;">
+                                <div class="progress-bar bg-success" role="progressbar"
+                                     th:style="'width: ' + ${user.getLevelProgressPercent()} + '%;'"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 text-md-end">
+                    <div class="d-inline-flex flex-column align-items-md-end gap-2">
+                        <div class="streak-pill fs-5 py-2 px-3 shadow-sm bg-white">
+                            <i class="fa-solid fa-fire text-danger fs-4"></i>
+                            <span class="fs-4" th:text="${user.currentStreak}">0</span> ngày Streak liên tiếp!
+                        </div>
+                        <div class="small text-muted">
+                            Kỷ lục cao nhất: <strong class="text-dark"><span th:text="${user.maxStreak}">0</span> ngày</strong>
+                        </div>
+                        <a th:href="@{/user/streak}" class="btn btn-sm btn-dino-outline mt-1">
+                            Xem Huy Hiệu & Thử Thách <i class="fa-solid fa-arrow-right ms-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <!-- Enrolled Courses -->
+            <div class="col-lg-8">
+                <div class="card card-dino p-4 mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h4 class="fw-bold mb-0"><i class="fa-solid fa-book-bookmark text-success me-2"></i> Khóa Học Của Tôi</h4>
+                        <a th:href="@{/courses}" class="btn btn-sm btn-dino-outline">Tìm thêm khóa học</a>
+                    </div>
+
+                    <div th:if="${#lists.isEmpty(enrollments)}" class="text-center py-5">
+                        <img th:src="@{/images/dino-logo.png}" alt="Dino" style="height: 80px;" class="mb-3">
+                        <h5>Bạn chưa đăng ký khóa học nào!</h5>
+                        <p class="text-secondary small">Hãy bắt đầu với khóa học <strong>Beginner (A1)</strong> để cùng Dino tích lũy những từ vựng đầu tiên nhé.</p>
+                        <a th:href="@{/courses}" class="btn btn-dino">Khám Phá Các Khóa Học</a>
+                    </div>
+
+                    <div class="d-flex flex-column gap-3" th:if="${!#lists.isEmpty(enrollments)}">
+                        <div th:each="enr : ${enrollments}" class="p-3 border rounded-4 bg-white shadow-sm d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
+                            <div class="d-flex align-items-center gap-3">
+                                <img th:src="${enr.course.imageUrl != null ? enr.course.imageUrl : '/images/dino-logo.png'}"
+                                     alt="Course" class="rounded-3" style="width: 80px; height: 60px; object-fit: cover;">
+                                <div>
+                                    <span class="badge bg-success-subtle text-success small mb-1" th:text="${enr.course.level.title}">Beginner (A1)</span>
+                                    <h6 class="fw-bold mb-1" th:text="${enr.course.title}">Tên Khóa Học</h6>
+                                    <!-- Progress -->
+                                    <div class="d-flex align-items-center gap-2 small text-muted">
+                                        <div class="progress" style="width: 140px; height: 8px;">
+                                            <div class="progress-bar bg-success" role="progressbar"
+                                                 th:style="'width: ' + ${enr.progressPercent} + '%;'"></div>
+                                        </div>
+                                        <span class="fw-bold" th:text="${enr.progressPercent} + '%'">0%</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <a th:href="@{'/courses/' + ${enr.course.slug}}" class="btn btn-dino">
+                                    Vào Học <i class="fa-solid fa-play ms-1"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Quizzes Result -->
+                <div class="card card-dino p-4">
+                    <h5 class="fw-bold mb-3"><i class="fa-solid fa-square-check text-primary me-2"></i> Kết Quả Bài Kiểm Tra Gần Đây</h5>
+                    <div th:if="${#lists.isEmpty(recentQuizzes)}" class="text-center py-4 text-muted small">
+                        Bạn chưa làm bài kiểm tra trắc nghiệm nào. Hãy vào làm bài tập sau mỗi bài học nhé!
+                    </div>
+                    <div class="table-responsive" th:if="${!#lists.isEmpty(recentQuizzes)}">
+                        <table class="table table-hover align-middle small mb-0">
+                            <thead class="table-light">
+                            <tr>
+                                <th>Bài Kiểm Tra</th>
+                                <th>Điểm Số</th>
+                                <th>Kết Quả</th>
+                                <th>Điểm Thưởng</th>
+                                <th>Thời Gian</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="q : ${recentQuizzes}">
+                                <td class="fw-bold" th:text="${q.lesson.title}">Tên bài</td>
+                                <td>
+                                    <span class="fw-bold" th:text="${q.score} + '%'">80%</span>
+                                    <span class="text-muted small">(<span th:text="${q.correctCount}">4</span>/<span th:text="${q.totalQuestions}">5</span>)</span>
+                                </td>
+                                <td>
+                                    <span th:if="${q.passed}" class="badge bg-success-subtle text-success">Đạt</span>
+                                    <span th:if="${!q.passed}" class="badge bg-danger-subtle text-danger">Chưa đạt</span>
+                                </td>
+                                <td class="text-warning fw-bold">+<span th:text="${q.xpEarned}">40</span> XP</td>
+                                <td class="text-muted" th:text="${#temporals.format(q.submittedAt, 'dd/MM/yyyy HH:mm')}">01/01/2026</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar Gamification -->
+            <div class="col-lg-4">
+                <!-- Badges Earned -->
+                <div class="card card-dino p-4 mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="fw-bold mb-0"><i class="fa-solid fa-award text-warning me-2"></i> Huy Hiệu Đạt Được</h5>
+                        <a th:href="@{/user/streak}" class="small text-decoration-none">Tất cả</a>
+                    </div>
+                    <div th:if="${#lists.isEmpty(userBadges)}" class="text-center py-3 text-muted small">
+                        <i class="fa-solid fa-medal fs-2 mb-2 text-secondary"></i>
+                        <p class="mb-0">Hoàn thành bài học và duy trì Streak 7 ngày để mở khóa huy hiệu đầu tiên nhé!</p>
+                    </div>
+                    <div class="row g-2 text-center" th:if="${!#lists.isEmpty(userBadges)}">
+                        <div class="col-4" th:each="ub : ${userBadges}">
+                            <div class="p-2 border rounded-3 bg-light">
+                                <i th:class="'fa-solid ' + ${ub.badge.iconClass} + ' fs-3 mb-1'"></i>
+                                <div class="fw-bold small text-truncate" th:text="${ub.badge.title}">Tên Huy Hiệu</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Leaderboard Mini Card -->
+                <div class="card card-dino p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="fw-bold mb-0"><i class="fa-solid fa-trophy text-warning me-2"></i> Top Học Viên Chăm Chỉ</h5>
+                        <a th:href="@{/user/leaderboard}" class="small text-decoration-none">Bảng đầy đủ</a>
+                    </div>
+                    <div class="list-group list-group-flush gap-2">
+                        <div th:each="topUser, iter : ${topLearners}" class="list-group-item border-0 p-2 d-flex align-items-center justify-content-between rounded bg-light">
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="badge rounded-circle p-2"
+                                      th:classappend="${iter.index == 0 ? 'bg-warning text-dark' : (iter.index == 1 ? 'bg-secondary text-white' : 'bg-light text-dark')}"
+                                      th:text="${iter.index + 1}">1</span>
+                                <img th:src="${topUser.avatarUrl != null ? topUser.avatarUrl : '/images/dino-logo.png'}"
+                                     alt="Avatar" class="rounded-circle" style="width: 28px; height: 28px; object-fit: cover;">
+                                <span class="fw-bold small" th:text="${topUser.fullName}">Tên</span>
+                            </div>
+                            <span class="fw-bold text-dino-dark-green small"><span th:text="${topUser.totalXp}">0</span> XP</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>
