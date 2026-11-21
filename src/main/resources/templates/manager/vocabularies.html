@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/navbar :: head('Quản Lý Từ Vựng - ' + ${lesson.title})}"></head>
+<body class="bg-light">
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<!-- Alerts -->
+<div class="container mt-3" th:if="${successMessage != null}">
+    <div class="alert alert-success alert-dismissible fade show rounded-4 shadow-sm" role="alert">
+        <i class="fa-solid fa-circle-check me-2"></i>
+        <span th:text="${successMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+</div>
+<div class="container mt-3" th:if="${errorMessage != null}">
+    <div class="alert alert-danger alert-dismissible fade show rounded-4 shadow-sm" role="alert">
+        <i class="fa-solid fa-circle-exclamation me-2"></i>
+        <span th:text="${errorMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+</div>
+
+<main class="py-5">
+    <div class="container">
+        <!-- Top bar -->
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+            <div>
+                <a th:href="@{'/manager/courses/' + ${course.id} + '/lessons'}" class="text-decoration-none text-muted small">
+                    <i class="fa-solid fa-arrow-left me-1"></i> Quay lại Danh sách bài học của <span th:text="${course.title}">Khóa học</span>
+                </a>
+                <h2 class="fw-bold mb-1 mt-1">
+                    Quản Lý Từ Vựng: <span class="text-dino-dark-green" th:text="${lesson.title}">Bài học</span>
+                </h2>
+                <div class="text-secondary small">
+                    Tổng số từ vựng hiện có: <strong class="text-dark"><span th:text="${vocabularies.size()}">0</span> từ</strong>
+                </div>
+            </div>
+            <div>
+                <button type="button" class="btn btn-dino" data-bs-toggle="collapse" data-bs-target="#addVocabCollapse">
+                    <i class="fa-solid fa-plus me-1"></i> Thêm Từ Vựng Mới
+                </button>
+            </div>
+        </div>
+
+        <!-- Add Vocab Form Collapse -->
+        <div class="collapse mb-4" id="addVocabCollapse">
+            <div class="card card-dino p-4 border-0 shadow-sm">
+                <h5 class="fw-bold mb-3"><i class="fa-solid fa-plus-circle text-success me-2"></i> Thêm Từ Vựng Mới Vào Bài Học</h5>
+                <form th:action="@{'/manager/lessons/' + ${lesson.id} + '/vocabularies/new'}" th:object="${newVocab}" method="post">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label small fw-bold text-secondary">Từ tiếng Anh *</label>
+                            <input type="text" th:field="*{word}" class="form-control rounded-pill" placeholder="Ví dụ: Elephant" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label small fw-bold text-secondary">Phiên âm IPA</label>
+                            <input type="text" th:field="*{phonetic}" class="form-control rounded-pill" placeholder="/ˈel.ɪ.fənt/">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label small fw-bold text-secondary">Từ loại</label>
+                            <input type="text" th:field="*{partOfSpeech}" class="form-control rounded-pill" placeholder="noun, verb, adj...">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold text-secondary">Nghĩa tiếng Việt *</label>
+                            <input type="text" th:field="*{meaningVi}" class="form-control rounded-pill" placeholder="Con voi" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold text-secondary">Link hình ảnh minh họa</label>
+                            <input type="text" th:field="*{imageUrl}" class="form-control rounded-pill" placeholder="https://...">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold text-secondary">Câu ví dụ (English)</label>
+                            <input type="text" th:field="*{exampleEn}" class="form-control rounded-pill" placeholder="The elephant is very big.">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold text-secondary">Dịch câu ví dụ (Tiếng Việt)</label>
+                            <input type="text" th:field="*{exampleVi}" class="form-control rounded-pill" placeholder="Con voi rất to lớn.">
+                        </div>
+                    </div>
+                    <div class="mt-4 text-end">
+                        <button type="submit" class="btn btn-dino">
+                            <i class="fa-solid fa-floppy-disk me-1"></i> Lưu Từ Vựng
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Vocabularies Table -->
+        <div class="card card-dino p-4 border-0 shadow-sm">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle small mb-0">
+                    <thead class="table-light">
+                    <tr>
+                        <th>Hình Ảnh</th>
+                        <th>Từ Vựng (English)</th>
+                        <th>Phiên Âm</th>
+                        <th>Từ Loại</th>
+                        <th>Nghĩa Tiếng Việt</th>
+                        <th>Ví Dụ Minh Họa</th>
+                        <th class="text-end">Thao Tác</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="v : ${vocabularies}">
+                        <td>
+                            <img th:src="${v.imageUrl != null ? v.imageUrl : '/images/dino-logo.png'}"
+                                 alt="Word" class="rounded-3" style="width: 44px; height: 44px; object-fit: cover;">
+                        </td>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="fw-bold fs-6 text-dark" th:text="${v.word}">Word</span>
+                                <button type="button" class="btn-speaker" style="width: 30px; height: 30px;"
+                                        th:data-word="${v.word}" onclick="speakWord(this.dataset.word);" title="Nghe thử phát âm">
+                                    <i class="fa-solid fa-volume-high small"></i>
+                                </button>
+                            </div>
+                        </td>
+                        <td class="text-muted" th:text="${v.phonetic}">/ipa/</td>
+                        <td>
+                            <span class="badge bg-light text-secondary border" th:text="${v.partOfSpeech}">noun</span>
+                        </td>
+                        <td class="fw-bold text-dino-dark-green" th:text="${v.meaningVi}">Nghĩa</td>
+                        <td>
+                            <div class="text-dark small" th:text="${v.exampleEn}">Example EN</div>
+                            <div class="text-muted" style="font-size: 0.75rem;" th:text="${v.exampleVi}">Example VI</div>
+                        </td>
+                        <td class="text-end">
+                            <form th:action="@{'/manager/vocabularies/' + ${v.id} + '/delete'}" method="post" class="d-inline" onsubmit="return confirm('Bạn có chắc chắn muốn xóa từ vựng này không?');">
+                                <input type="hidden" name="lessonId" th:value="${lesson.id}">
+                                <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill" title="Xóa">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div th:if="${#lists.isEmpty(vocabularies)}" class="text-center py-5 text-muted">
+                <i class="fa-solid fa-book-open fs-1 mb-2"></i>
+                <h5>Bài học này chưa có từ vựng nào!</h5>
+                <p class="small">Bấm vào nút <strong>"Thêm Từ Vựng Mới"</strong> để bắt đầu bổ sung từ vựng và câu ví dụ.</p>
+            </div>
+        </div>
+    </div>
+</main>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>

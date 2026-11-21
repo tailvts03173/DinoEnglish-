@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/navbar :: head(${course.title} + ' - Dino English')}"></head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<!-- Success / Flash Messages -->
+<div class="container mt-3" th:if="${successMessage != null}">
+    <div class="alert alert-success alert-dismissible fade show rounded-4 shadow-sm" role="alert">
+        <i class="fa-solid fa-circle-check me-2"></i>
+        <span th:text="${successMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+</div>
+
+<main class="py-5">
+    <div class="container">
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a th:href="@{/}" class="text-decoration-none">Trang chủ</a></li>
+                <li class="breadcrumb-item"><a th:href="@{/courses}" class="text-decoration-none">Khóa học</a></li>
+                <li class="breadcrumb-item active" aria-current="page" th:text="${course.title}">Chi tiết</li>
+            </ol>
+        </nav>
+
+        <!-- Course Header Card -->
+        <div class="card card-dino p-4 p-lg-5 mb-5 border-0 shadow">
+            <div class="row align-items-center g-4">
+                <div class="col-lg-8">
+                    <span class="badge bg-success px-3 py-2 rounded-pill mb-3" th:text="${course.level.title}">Beginner (A1)</span>
+                    <h1 class="fw-bold mb-3" th:text="${course.title}">Tên Khóa Học</h1>
+                    <p class="lead text-secondary mb-4" th:text="${course.description}">Mô tả khóa học chi tiết...</p>
+
+                    <div class="d-flex flex-wrap gap-4 text-secondary mb-4 small fw-bold">
+                        <span><i class="fa-regular fa-clock text-primary me-2"></i> Thời lượng: <span th:text="${course.durationHours}">24</span> giờ</span>
+                        <span><i class="fa-solid fa-book-open text-success me-2"></i> Số bài học: <span th:text="${lessons.size()}">4</span> bài</span>
+                        <span><i class="fa-solid fa-certificate text-warning me-2"></i> Chứng nhận hoàn thành Dino</span>
+                    </div>
+
+                    <!-- Enrollment Actions -->
+                    <div th:if="${currentUser == null}">
+                        <a th:href="@{/login(message='require_login')}" class="btn btn-dino btn-lg px-4">
+                            <i class="fa-solid fa-right-to-bracket me-2"></i> Đăng Nhập Để Tham Gia Học
+                        </a>
+                    </div>
+                    <div th:if="${currentUser != null}">
+                        <div th:if="${!isEnrolled}">
+                            <form th:action="@{'/user/enroll/' + ${course.id}}" method="post">
+                                <button type="submit" class="btn btn-dino btn-lg px-4">
+                                    <i class="fa-solid fa-graduation-cap me-2"></i> Đăng Ký Học Khóa Này (Miễn Phí)
+                                </button>
+                            </form>
+                        </div>
+                        <div th:if="${isEnrolled}" class="d-flex align-items-center gap-3">
+                            <span class="badge bg-success-subtle text-success fs-6 px-3 py-2 rounded-pill">
+                                <i class="fa-solid fa-circle-check me-1"></i> Bạn đã đăng ký khóa này
+                            </span>
+                            <a th:if="${!lessons.isEmpty()}" th:href="@{'/user/lesson/' + ${lessons[0].id}}" class="btn btn-dino btn-lg px-4">
+                                <i class="fa-solid fa-play me-2"></i> Bắt Đầu Học Bài Đầu Tiên
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 text-center">
+                    <img th:src="${course.imageUrl != null ? course.imageUrl : '/images/dino-logo.png'}"
+                         alt="Course image" class="img-fluid rounded-4 shadow-sm" style="max-height: 260px; object-fit: cover;">
+                </div>
+            </div>
+        </div>
+
+        <!-- Lessons Outline / Curriculum -->
+        <div class="row g-4">
+            <div class="col-lg-8">
+                <div class="card card-dino p-4">
+                    <h3 class="fw-bold mb-4 d-flex align-items-center justify-content-between">
+                        <span><i class="fa-solid fa-list-check text-dino-green me-2"></i> Giáo Trình & Danh Sách Bài Học</span>
+                        <span class="badge bg-light text-secondary fs-6" th:text="${lessons.size()} + ' bài'">0 bài</span>
+                    </h3>
+
+                    <div class="list-group list-group-flush gap-3">
+                        <div th:each="lesson : ${lessons}" class="list-group-item border rounded-3 p-3 d-flex align-items-center justify-content-between">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="rounded-circle bg-light d-flex align-items-center justify-content-center text-dark fw-bold" style="width: 42px; height: 42px;">
+                                    <span th:text="${lesson.orderIndex}">1</span>
+                                </div>
+                                <div>
+                                    <h6 class="fw-bold mb-1" th:text="${lesson.title}">Tiêu đề bài học</h6>
+                                    <div class="d-flex align-items-center gap-2 small text-muted">
+                                        <span class="badge bg-light text-dark border">
+                                            <i th:class="'fa-solid ' + ${lesson.lessonType.icon} + ' me-1 ' + ${lesson.lessonType.colorClass}"></i>
+                                            <span th:text="${lesson.lessonType.title}">Từ vựng</span>
+                                        </span>
+                                        <span class="text-warning fw-bold"><i class="fa-solid fa-star me-1"></i>+<span th:text="${lesson.xpReward}">20</span> XP</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="d-flex align-items-center gap-2">
+                                <!-- Checkmark if completed -->
+                                <span th:if="${completedLessonIds != null and completedLessonIds.contains(lesson.id)}"
+                                      class="badge bg-success-subtle text-success p-2 rounded-circle" title="Đã hoàn thành">
+                                    <i class="fa-solid fa-check"></i>
+                                </span>
+
+                                <a th:if="${currentUser != null}" th:href="@{'/user/lesson/' + ${lesson.id}}" class="btn btn-dino-outline btn-sm">
+                                    Vào học <i class="fa-solid fa-chevron-right ms-1"></i>
+                                </a>
+                                <a th:if="${currentUser == null}" th:href="@{/login(message='require_login')}" class="btn btn-light btn-sm border">
+                                    Khóa <i class="fa-solid fa-lock ms-1"></i>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div th:if="${#lists.isEmpty(lessons)}" class="text-center py-4 text-muted">
+                            <i class="fa-solid fa-book-open fs-2 mb-2"></i>
+                            <p>Nội dung bài giảng đang được ban chuyên môn biên soạn!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar Info -->
+            <div class="col-lg-4">
+                <!-- Mascot Advice Card -->
+                <div class="card card-dino p-4 mb-4 text-center bg-dino-soft border-0">
+                    <img th:src="@{/images/dino-logo.png}" alt="Dino mascot" style="max-height: 120px;" class="mx-auto mb-2">
+                    <h5 class="fw-bold text-dino-dark-green">Lời Khuyên Của Dino 🦖</h5>
+                    <p class="small text-secondary mb-0">
+                        "Mỗi ngày chỉ cần dành ra 15 phút học 1 bài và làm quiz trắc nghiệm là bạn đã duy trì được chuỗi Streak và tích lũy phản xạ tiếng Anh vượt trội!"
+                    </p>
+                </div>
+
+                <!-- Attached Resources -->
+                <div class="card card-dino p-4">
+                    <h5 class="fw-bold mb-3"><i class="fa-solid fa-paperclip text-primary me-2"></i> Tài Liệu Đính Kèm</h5>
+                    <ul class="list-unstyled mb-0 d-flex flex-column gap-2 small">
+                        <li class="d-flex align-items-center justify-content-between p-2 rounded bg-light">
+                            <span><i class="fa-solid fa-file-pdf text-danger me-2"></i> Giáo trình PDF tóm tắt</span>
+                            <a th:href="@{/user/documents}" class="btn btn-sm btn-link text-decoration-none">Tải về</a>
+                        </li>
+                        <li class="d-flex align-items-center justify-content-between p-2 rounded bg-light">
+                            <span><i class="fa-solid fa-file-audio text-warning me-2"></i> File nghe audio MP3</span>
+                            <a th:href="@{/user/documents}" class="btn btn-sm btn-link text-decoration-none">Tải về</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>

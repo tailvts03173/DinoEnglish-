@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/navbar :: head(${isNew ? 'Thêm Khóa Học Mới' : 'Chỉnh Sửa Khóa Học'} + ' - Dino English')}"></head>
+<body class="bg-light">
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<main class="py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <!-- Top link -->
+                <div class="mb-4">
+                    <a th:href="@{/manager/dashboard}" class="text-decoration-none text-muted small">
+                        <i class="fa-solid fa-arrow-left me-1"></i> Quay lại Bảng điều khiển Quản lý
+                    </a>
+                </div>
+
+                <div class="card card-dino p-4 p-md-5 border-0 shadow-sm">
+                    <h3 class="fw-bold mb-4" th:text="${isNew ? 'Tạo Khóa Học Mới' : 'Chỉnh Sửa Khóa Học'}">Khóa Học</h3>
+
+                    <form th:action="@{/manager/courses/save}" th:object="${course}" method="post">
+                        <input type="hidden" th:field="*{id}">
+
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold text-secondary">Tên khóa học *</label>
+                            <input type="text" th:field="*{title}" class="form-control rounded-pill py-2" placeholder="Ví dụ: Tiếng Anh Giao Tiếp A1" required>
+                        </div>
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold text-secondary">Đường dẫn tĩnh (Slug)</label>
+                                <input type="text" th:field="*{slug}" class="form-control rounded-pill py-2" placeholder="Để trống hệ thống sẽ tự sinh">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold text-secondary">Trình độ CEFR *</label>
+                                <select th:field="*{level}" class="form-select rounded-pill py-2" required>
+                                    <option th:each="lvl : ${levels}" th:value="${lvl.name()}" th:text="${lvl.title}">A1</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold text-secondary">Thời lượng ước tính (Giờ) *</label>
+                                <input type="number" th:field="*{durationHours}" class="form-control rounded-pill py-2" min="1" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold text-secondary">Thứ tự hiển thị *</label>
+                                <input type="number" th:field="*{displayOrder}" class="form-control rounded-pill py-2" min="1" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold text-secondary">Link hình ảnh đại diện (Image URL)</label>
+                            <input type="text" th:field="*{imageUrl}" class="form-control rounded-pill py-2" placeholder="https://images.unsplash.com/...">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold text-secondary">Mô tả khóa học *</label>
+                            <textarea th:field="*{description}" class="form-control rounded-4" rows="4" placeholder="Nhập mục tiêu và nội dung khóa học..." required></textarea>
+                        </div>
+
+                        <div class="mb-4 form-check form-switch">
+                            <input class="form-check-input" type="checkbox" th:field="*{active}" id="activeSwitch">
+                            <label class="form-check-label small fw-bold text-secondary" for="activeSwitch">Cho phép học viên truy cập khóa học này (Kích hoạt)</label>
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2">
+                            <a th:href="@{/manager/dashboard}" class="btn btn-light rounded-pill px-4">Hủy bỏ</a>
+                            <button type="submit" class="btn btn-dino px-4">
+                                <i class="fa-solid fa-floppy-disk me-1"></i> Lưu Khóa Học
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/navbar :: head('Kết Quả Bài Kiểm Tra - Dino English')}"></head>
+<body class="bg-light">
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<main class="py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <!-- Score Summary Card -->
+                <div class="card card-dino p-5 text-center mb-5 border-0 shadow">
+                    <img th:src="@{/images/dino-logo.png}" alt="Dino mascot" style="height: 110px;" class="mx-auto mb-3">
+
+                    <div th:if="${submission.passed}">
+                        <span class="badge bg-success-subtle text-success fs-5 px-4 py-2 rounded-pill mb-2">
+                            <i class="fa-solid fa-trophy text-warning me-1"></i> XUẤT SẮC! BẠN ĐÃ VƯỢT QUA!
+                        </span>
+                        <h2 class="fw-bold mt-2">Chúc Mừng Bạn Đã Hoàn Thành Bài Kiểm Tra</h2>
+                        <p class="text-secondary small">Kiến thức của bạn rất vững vàng. Dino rất tự hào về bạn!</p>
+                    </div>
+
+                    <div th:if="${!submission.passed}">
+                        <span class="badge bg-warning-subtle text-warning-emphasis fs-5 px-4 py-2 rounded-pill mb-2">
+                            <i class="fa-solid fa-face-smile text-warning me-1"></i> CỐ GẮNG THÊM MỘT CHÚT NHÉ!
+                        </span>
+                        <h2 class="fw-bold mt-2">Bạn Cần Ôn Lại Bài Một Chút</h2>
+                        <p class="text-secondary small">Hãy xem lại phần giải thích chi tiết bên dưới và làm lại để đạt điểm cao hơn nhé!</p>
+                    </div>
+
+                    <!-- Score Ring -->
+                    <div class="my-4">
+                        <div class="display-3 fw-black"
+                             th:classappend="${submission.passed ? 'text-success' : 'text-warning'}"
+                             th:text="${submission.score} + '%'">80%</div>
+                        <div class="fw-bold text-muted">
+                            Đúng <span th:text="${submission.correctCount}">4</span> trên tổng số <span th:text="${submission.totalQuestions}">5</span> câu hỏi
+                        </div>
+                        <div class="mt-3" th:if="${submission.xpEarned > 0}">
+                            <span class="xp-pill fs-5 py-2 px-4 shadow-sm">
+                                <i class="fa-solid fa-star text-warning"></i> +<span th:text="${submission.xpEarned}">40</span> XP Đã Được Cộng!
+                            </span>
+                        </div>
+                        <div class="mt-3 small text-muted" th:if="${submission.xpEarned == 0}">
+                            Bài này đã được tính XP trước đó nên lần làm lại không cộng thêm XP.
+                        </div>
+                    </div>
+
+                    <div class="d-flex flex-wrap gap-3 justify-content-center mt-3">
+                        <a th:href="@{'/user/quiz/' + ${lesson.id}}" class="btn btn-outline-secondary rounded-pill">
+                            <i class="fa-solid fa-rotate-right me-1"></i> Làm Lại Bài Kiểm Tra
+                        </a>
+                        <a th:href="@{'/courses/' + ${course.slug}}" class="btn btn-dino">
+                            <i class="fa-solid fa-arrow-right me-1"></i> Quay Lại Khóa Học
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Answer Details Review -->
+                <h4 class="fw-bold mb-4"><i class="fa-solid fa-list-check text-primary me-2"></i> Chi Tiết Đáp Án & Lời Giải Thích</h4>
+
+                <div class="d-flex flex-column gap-4">
+                    <div th:each="q, iter : ${questions}" class="card card-dino p-4 border-0 shadow-sm">
+                        <div class="d-flex align-items-start justify-content-between mb-3">
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="badge bg-light text-dark border rounded-pill" th:text="'Câu ' + ${iter.index + 1}">Câu 1</span>
+                                <h6 class="fw-bold mb-0" th:text="${q.question}">Nội dung câu hỏi?</h6>
+                            </div>
+                            <!-- Correct or Incorrect badge -->
+                            <div>
+                                <span th:if="${answers.get(q.id) != null and answers.get(q.id).equalsIgnoreCase(q.correctOption)}"
+                                      class="badge bg-success-subtle text-success px-3 py-2 rounded-pill">
+                                    <i class="fa-solid fa-check me-1"></i> Chính xác
+                                </span>
+                                <span th:if="${answers.get(q.id) == null or !answers.get(q.id).equalsIgnoreCase(q.correctOption)}"
+                                      class="badge bg-danger-subtle text-danger px-3 py-2 rounded-pill">
+                                    <i class="fa-solid fa-xmark me-1"></i> Sai
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="small mb-3">
+                            <div class="text-muted">Bạn đã chọn:
+                                <strong th:class="${answers.get(q.id) != null and answers.get(q.id).equalsIgnoreCase(q.correctOption) ? 'text-success' : 'text-danger'}"
+                                        th:text="${answers.get(q.id) != null ? 'Đáp án ' + answers.get(q.id) : 'Chưa chọn'}">A</strong>
+                            </div>
+                            <div class="text-success fw-bold">Đáp án đúng:
+                                <span th:text="'Đáp án ' + ${q.correctOption}">B</span>
+                            </div>
+                        </div>
+
+                        <!-- Explanation Note -->
+                        <div class="p-3 bg-light rounded-3 small text-secondary border-start border-4 border-success">
+                            <strong class="text-dark"><i class="fa-solid fa-lightbulb text-warning me-1"></i> Giải thích chi tiết:</strong>
+                            <p class="mb-0 mt-1" th:text="${q.explanation}">Giải thích câu hỏi chi tiết...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>

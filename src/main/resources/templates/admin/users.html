@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/navbar :: head('Quản Lý Người Dùng - Admin Dino English')}"></head>
+<body class="bg-light">
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<!-- Alerts -->
+<div class="container mt-3" th:if="${successMessage != null}">
+    <div class="alert alert-success alert-dismissible fade show rounded-4 shadow-sm" role="alert">
+        <i class="fa-solid fa-circle-check me-2"></i>
+        <span th:text="${successMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+</div>
+<div class="container mt-3" th:if="${errorMessage != null}">
+    <div class="alert alert-danger alert-dismissible fade show rounded-4 shadow-sm" role="alert">
+        <i class="fa-solid fa-circle-exclamation me-2"></i>
+        <span th:text="${errorMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+</div>
+
+<main class="py-5">
+    <div class="container">
+        <!-- Top bar -->
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+            <div>
+                <a th:href="@{/admin/dashboard}" class="text-decoration-none text-muted small">
+                    <i class="fa-solid fa-arrow-left me-1"></i> Bảng điều khiển Admin
+                </a>
+                <h2 class="fw-bold mb-1 mt-1">Quản Lý Danh Sách Người Dùng</h2>
+                <p class="text-secondary small mb-0">Quản trị toàn bộ tài khoản Admin, Quản lý nội dung và Học viên trên Dino English.</p>
+            </div>
+            <div>
+                <button type="button" class="btn btn-dino" data-bs-toggle="modal" data-bs-target="#createUserModal">
+                    <i class="fa-solid fa-user-plus me-1"></i> Thêm Tài Khoản Mới
+                </button>
+            </div>
+        </div>
+
+        <!-- Users Table -->
+        <div class="card card-dino p-4 border-0 shadow-sm">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle small mb-0">
+                    <thead class="table-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>Học Viên / Người Dùng</th>
+                        <th>Email & SĐT</th>
+                        <th>Vai Trò</th>
+                        <th>Trạng Thái</th>
+                        <th>XP & Streak</th>
+                        <th class="text-end">Thao Tác</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="u : ${users}">
+                        <td th:text="${u.id}">1</td>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <img th:src="${u.avatarUrl != null ? u.avatarUrl : '/images/dino-logo.png'}"
+                                     alt="Avatar" class="rounded-circle" style="width: 36px; height: 36px; object-fit: cover;">
+                                <div>
+                                    <div class="fw-bold" th:text="${u.fullName}">Tên</div>
+                                    <div class="text-muted" style="font-size: 0.75rem;">@<span th:text="${u.username}">username</span></div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div th:text="${u.email}">email@example.com</div>
+                            <div class="text-muted" style="font-size: 0.75rem;" th:text="${u.phone != null ? u.phone : 'Chưa cập nhật'}">0987...</div>
+                        </td>
+                        <td>
+                            <!-- Change Role Form -->
+                            <form th:action="@{'/admin/users/' + ${u.id} + '/change-role'}" method="post" class="d-inline-flex align-items-center gap-1">
+                                <select name="role" class="form-select form-select-sm rounded-pill" style="width: 140px;" onchange="this.form.submit()">
+                                    <option th:each="r : ${roles}" th:value="${r.name()}" th:text="${r.displayName}" th:selected="${u.role == r}"></option>
+                                </select>
+                            </form>
+                        </td>
+                        <td>
+                            <span th:class="'badge ' + ${u.status.name() == 'ACTIVE' ? 'bg-success-subtle text-success' : 'bg-danger-subtle text-danger'}"
+                                  th:text="${u.status.displayName}">Hoạt động</span>
+                        </td>
+                        <td>
+                            <span class="text-warning fw-bold"><i class="fa-solid fa-star me-1"></i><span th:text="${u.totalXp}">0</span></span>
+                            <span class="text-danger fw-bold ms-2"><i class="fa-solid fa-fire me-1"></i><span th:text="${u.currentStreak}">0</span></span>
+                        </td>
+                        <td class="text-end">
+                            <!-- Toggle Active/Blocked -->
+                            <form th:action="@{'/admin/users/' + ${u.id} + '/toggle-status'}" method="post" class="d-inline">
+                                <button type="submit"
+                                        th:class="'btn btn-sm rounded-pill ' + ${u.status.name() == 'ACTIVE' ? 'btn-outline-danger' : 'btn-outline-success'}"
+                                        th:title="${u.status.name() == 'ACTIVE' ? 'Khóa tài khoản' : 'Mở khóa'}">
+                                    <i th:class="'fa-solid ' + ${u.status.name() == 'ACTIVE' ? 'fa-lock' : 'fa-lock-open'}"></i>
+                                    <span th:text="${u.status.name() == 'ACTIVE' ? 'Khóa' : 'Mở khóa'}">Khóa</span>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Create User Modal -->
+<div class="modal fade" id="createUserModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4 border-0 shadow">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fw-bold">Tạo Tài Khoản Mới</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form th:action="@{/admin/users/create}" method="post">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-secondary">Tên đăng nhập *</label>
+                        <input type="text" name="username" class="form-control rounded-pill" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-secondary">Họ và tên *</label>
+                        <input type="text" name="fullName" class="form-control rounded-pill" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-secondary">Email *</label>
+                        <input type="email" name="email" class="form-control rounded-pill" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-secondary">Số điện thoại</label>
+                        <input type="text" name="phone" class="form-control rounded-pill">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-secondary">Mật khẩu ban đầu *</label>
+                        <input type="password" name="password" class="form-control rounded-pill" minlength="6" placeholder="Tối thiểu 6 ký tự" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-secondary">Phân quyền vai trò *</label>
+                        <select name="role" class="form-select rounded-pill" required>
+                            <option value="USER">Học viên (User)</option>
+                            <option value="MANAGER">Quản lý nội dung (Manager)</option>
+                            <option value="ADMIN">Quản trị viên (Admin)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 pt-0">
+                    <button type="button" class="btn btn-light rounded-pill" data-bs-dismiss="modal">Hủy</button>
+                    <button type="submit" class="btn btn-dino">Tạo Tài Khoản</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/navbar :: head('Khóa Học Của Tôi - Dino English')}"></head>
+<body class="bg-light">
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<main class="py-5">
+    <div class="container">
+        <!-- Top bar -->
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-5">
+            <div>
+                <a th:href="@{/user/dashboard}" class="text-decoration-none text-muted small">
+                    <i class="fa-solid fa-arrow-left me-1"></i> Bàn học cá nhân
+                </a>
+                <h2 class="fw-bold mb-1 mt-1">Các Khóa Học Tôi Đã Đăng Ký</h2>
+                <p class="text-secondary small mb-0">Theo dõi tiến độ hoàn thành các khóa học tiếng Anh của bạn.</p>
+            </div>
+            <div>
+                <a th:href="@{/courses}" class="btn btn-dino">
+                    <i class="fa-solid fa-plus me-1"></i> Đăng Ký Khóa Mới
+                </a>
+            </div>
+        </div>
+
+        <div th:if="${#lists.isEmpty(enrollments)}" class="text-center py-5 card card-dino p-5 border-0 shadow-sm">
+            <img th:src="@{/images/dino-logo.png}" alt="Dino mascot" style="height: 100px;" class="mx-auto mb-3">
+            <h4 class="fw-bold">Bạn chưa đăng ký khóa học nào!</h4>
+            <p class="text-secondary small mb-4">Hãy duyệt qua danh mục khóa học chuẩn CEFR của Dino English để bắt đầu nhé.</p>
+            <div>
+                <a th:href="@{/courses}" class="btn btn-dino btn-lg px-4">Khám Phá Các Khóa Học</a>
+            </div>
+        </div>
+
+        <div class="row g-4" th:if="${!#lists.isEmpty(enrollments)}">
+            <div class="col-md-6 col-lg-4" th:each="enr : ${enrollments}">
+                <div class="card card-dino h-100 border-0 shadow-sm">
+                    <div class="position-relative" style="height: 180px; overflow: hidden;">
+                        <img th:src="${enr.course.imageUrl != null ? enr.course.imageUrl : '/images/dino-logo.png'}"
+                             alt="Course" class="w-100 h-100 object-fit-cover">
+                        <span class="position-absolute top-0 end-0 m-2 badge bg-success"
+                              th:text="${enr.course.level.title}">Beginner (A1)</span>
+                    </div>
+
+                    <div class="card-body p-4 d-flex flex-column justify-content-between">
+                        <div>
+                            <h5 class="fw-bold mb-2 text-dark" th:text="${enr.course.title}">Tên Khóa Học</h5>
+                            <p class="small text-secondary mb-3" th:text="${#strings.abbreviate(enr.course.description, 90)}">Mô tả ngắn...</p>
+
+                            <!-- Progress -->
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between small fw-bold mb-1">
+                                    <span class="text-muted">Tiến độ hoàn thành:</span>
+                                    <span class="text-dino-dark-green" th:text="${enr.progressPercent} + '%'">0%</span>
+                                </div>
+                                <div class="progress" style="height: 8px; border-radius: 9999px;">
+                                    <div class="progress-bar bg-success" role="progressbar"
+                                         th:style="'width: ' + ${enr.progressPercent} + '%;'"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="pt-3 border-top">
+                            <a th:href="@{'/courses/' + ${enr.course.slug}}" class="btn btn-dino w-100">
+                                Tiếp Tục Học <i class="fa-solid fa-play ms-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>

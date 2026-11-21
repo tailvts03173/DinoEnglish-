@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/navbar :: head('Hồ Sơ Cá Nhân - Dino English')}"></head>
+<body class="bg-light">
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<!-- Alerts -->
+<div class="container mt-3" th:if="${successMessage != null}">
+    <div class="alert alert-success alert-dismissible fade show rounded-4 shadow-sm" role="alert">
+        <i class="fa-solid fa-circle-check me-2"></i>
+        <span th:text="${successMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+</div>
+<div class="container mt-3" th:if="${errorMessage != null}">
+    <div class="alert alert-danger alert-dismissible fade show rounded-4 shadow-sm" role="alert">
+        <i class="fa-solid fa-circle-exclamation me-2"></i>
+        <span th:text="${errorMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+</div>
+
+<main class="py-5">
+    <div class="container">
+        <div class="row g-4">
+            <!-- Sidebar summary -->
+            <div class="col-lg-4">
+                <div class="card card-dino p-4 text-center border-0 shadow-sm mb-4">
+                    <img th:src="${user.avatarUrl != null ? user.avatarUrl : '/images/dino-logo.png'}"
+                         alt="Avatar" class="rounded-circle mx-auto mb-3 border border-4 border-light shadow-sm"
+                         style="width: 120px; height: 120px; object-fit: cover;">
+
+                    <h4 class="fw-bold mb-1" th:text="${user.fullName}">Tên người dùng</h4>
+                    <span class="badge bg-success-subtle text-success mb-2" th:text="${user.getDinoRank()}">Baby Dino</span>
+                    <p class="text-secondary small mb-3">@<span th:text="${user.username}">username</span></p>
+
+                    <div class="row g-2 text-center pt-3 border-top small">
+                        <div class="col-6">
+                            <div class="fw-bold fs-5 text-warning"><span th:text="${user.totalXp}">0</span></div>
+                            <div class="text-muted">Tổng XP</div>
+                        </div>
+                        <div class="col-6">
+                            <div class="fw-bold fs-5 text-danger"><span th:text="${user.currentStreak}">0</span> ngày</div>
+                            <div class="text-muted">Chuỗi Streak</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile & Password Forms -->
+            <div class="col-lg-8">
+                <!-- Update Profile Info -->
+                <div class="card card-dino p-4 mb-4 border-0 shadow-sm">
+                    <h5 class="fw-bold mb-4"><i class="fa-solid fa-user-pen text-dino-green me-2"></i> Cập Nhật Thông Tin Cá Nhân</h5>
+                    <form th:action="@{/user/profile}" method="post">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="username" class="form-label fw-bold small text-secondary">Tên đăng nhập</label>
+                                <input type="text" class="form-control rounded-pill bg-light" id="username" th:value="${user.username}" readonly>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="email" class="form-label fw-bold small text-secondary">Email</label>
+                                <input type="email" class="form-control rounded-pill bg-light" id="email" th:value="${user.email}" readonly>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="fullName" class="form-label fw-bold small text-secondary">Họ và tên *</label>
+                                <input type="text" class="form-control rounded-pill" id="fullName" name="fullName" th:value="${user.fullName}" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="phone" class="form-label fw-bold small text-secondary">Số điện thoại</label>
+                                <input type="text" class="form-control rounded-pill" id="phone" name="phone" th:value="${user.phone}">
+                            </div>
+                            <div class="col-12">
+                                <label for="avatarUrl" class="form-label fw-bold small text-secondary">Link ảnh đại diện (Avatar URL)</label>
+                                <input type="text" class="form-control rounded-pill" id="avatarUrl" name="avatarUrl" th:value="${user.avatarUrl}">
+                                <div class="form-text small">Mặc định: /images/dino-logo.png hoặc nhập link ảnh online của bạn.</div>
+                            </div>
+                        </div>
+                        <div class="mt-4 text-end">
+                            <button type="submit" class="btn btn-dino">
+                                <i class="fa-solid fa-floppy-disk me-1"></i> Lưu Thay Đổi
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Change Password Form -->
+                <div class="card card-dino p-4 border-0 shadow-sm">
+                    <h5 class="fw-bold mb-4"><i class="fa-solid fa-key text-warning me-2"></i> Đổi Mật Khẩu</h5>
+                    <form th:action="@{/user/change-password}" method="post">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label for="currentPassword" class="form-label fw-bold small text-secondary">Mật khẩu hiện tại *</label>
+                                <input type="password" class="form-control rounded-pill" id="currentPassword" name="currentPassword" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="newPassword" class="form-label fw-bold small text-secondary">Mật khẩu mới *</label>
+                                <input type="password" class="form-control rounded-pill" id="newPassword" name="newPassword" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="confirmNewPassword" class="form-label fw-bold small text-secondary">Xác nhận mật khẩu mới *</label>
+                                <input type="password" class="form-control rounded-pill" id="confirmNewPassword" name="confirmNewPassword" required>
+                            </div>
+                        </div>
+                        <div class="mt-4 text-end">
+                            <button type="submit" class="btn btn-warning rounded-pill px-4 fw-bold">
+                                <i class="fa-solid fa-lock me-1"></i> Đổi Mật Khẩu
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>

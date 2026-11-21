@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/navbar :: head('Quản Lý Trắc Nghiệm - ' + ${lesson.title})}"></head>
+<body class="bg-light">
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<!-- Alerts -->
+<div class="container mt-3" th:if="${successMessage != null}">
+    <div class="alert alert-success alert-dismissible fade show rounded-4 shadow-sm" role="alert">
+        <i class="fa-solid fa-circle-check me-2"></i>
+        <span th:text="${successMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+</div>
+<div class="container mt-3" th:if="${errorMessage != null}">
+    <div class="alert alert-danger alert-dismissible fade show rounded-4 shadow-sm" role="alert">
+        <i class="fa-solid fa-circle-exclamation me-2"></i>
+        <span th:text="${errorMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+</div>
+
+<main class="py-5">
+    <div class="container">
+        <!-- Top bar -->
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+            <div>
+                <a th:href="@{'/manager/courses/' + ${course.id} + '/lessons'}" class="text-decoration-none text-muted small">
+                    <i class="fa-solid fa-arrow-left me-1"></i> Quay lại Danh sách bài học của <span th:text="${course.title}">Khóa học</span>
+                </a>
+                <h2 class="fw-bold mb-1 mt-1">
+                    Quản Lý Câu Hỏi Trắc Nghiệm: <span class="text-dino-dark-green" th:text="${lesson.title}">Bài học</span>
+                </h2>
+                <div class="text-secondary small">
+                    Tổng số câu hỏi Quiz: <strong class="text-dark"><span th:text="${questions.size()}">0</span> câu</strong>
+                </div>
+            </div>
+            <div>
+                <button type="button" class="btn btn-dino" data-bs-toggle="collapse" data-bs-target="#addQuizCollapse">
+                    <i class="fa-solid fa-plus me-1"></i> Thêm Câu Hỏi Mới
+                </button>
+            </div>
+        </div>
+
+        <!-- Add Question Form Collapse -->
+        <div class="collapse mb-4" id="addQuizCollapse">
+            <div class="card card-dino p-4 border-0 shadow-sm">
+                <h5 class="fw-bold mb-3"><i class="fa-solid fa-circle-question text-warning me-2"></i> Soạn Câu Hỏi Trắc Nghiệm Mới</h5>
+                <form th:action="@{'/manager/lessons/' + ${lesson.id} + '/quizzes/new'}" th:object="${newQuestion}" method="post">
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-secondary">Nội dung câu hỏi *</label>
+                        <textarea th:field="*{question}" class="form-control rounded-3" rows="2" placeholder="Nhập câu hỏi trắc nghiệm..." required></textarea>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold text-secondary">Lựa chọn A *</label>
+                            <input type="text" th:field="*{optionA}" class="form-control rounded-pill" placeholder="Đáp án A" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold text-secondary">Lựa chọn B *</label>
+                            <input type="text" th:field="*{optionB}" class="form-control rounded-pill" placeholder="Đáp án B" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold text-secondary">Lựa chọn C *</label>
+                            <input type="text" th:field="*{optionC}" class="form-control rounded-pill" placeholder="Đáp án C" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold text-secondary">Lựa chọn D *</label>
+                            <input type="text" th:field="*{optionD}" class="form-control rounded-pill" placeholder="Đáp án D" required>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-4">
+                            <label class="form-label small fw-bold text-secondary">Đáp án đúng nhất *</label>
+                            <select th:field="*{correctOption}" class="form-select rounded-pill" required>
+                                <option value="A">Đáp án A</option>
+                                <option value="B">Đáp án B</option>
+                                <option value="C">Đáp án C</option>
+                                <option value="D">Đáp án D</option>
+                            </select>
+                        </div>
+                        <div class="col-md-8">
+                            <label class="form-label small fw-bold text-secondary">Lời giải thích chi tiết</label>
+                            <input type="text" th:field="*{explanation}" class="form-control rounded-pill" placeholder="Giải thích lý do vì sao đáp án này đúng...">
+                        </div>
+                    </div>
+
+                    <div class="mt-4 text-end">
+                        <button type="submit" class="btn btn-dino">
+                            <i class="fa-solid fa-floppy-disk me-1"></i> Lưu Câu Hỏi
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Questions List -->
+        <div class="d-flex flex-column gap-3">
+            <div th:each="q, iter : ${questions}" class="card card-dino p-4 border-0 shadow-sm">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="badge bg-warning-subtle text-warning-emphasis rounded-pill" th:text="'Câu ' + ${iter.index + 1}">Câu 1</span>
+                        <h6 class="fw-bold mb-0 text-dark" th:text="${q.question}">Nội dung câu hỏi?</h6>
+                    </div>
+                    <div>
+                        <form th:action="@{'/manager/quizzes/' + ${q.id} + '/delete'}" method="post" class="d-inline" onsubmit="return confirm('Bạn có chắc muốn xóa câu hỏi này không?');">
+                            <input type="hidden" name="lessonId" th:value="${lesson.id}">
+                            <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill" title="Xóa">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="row g-2 small mb-3">
+                    <div class="col-md-6" th:classappend="${q.correctOption == 'A' ? 'text-success fw-bold' : 'text-muted'}">
+                        A. <span th:text="${q.optionA}">Option A</span> <span th:if="${q.correctOption == 'A'}">(✓ Đúng)</span>
+                    </div>
+                    <div class="col-md-6" th:classappend="${q.correctOption == 'B' ? 'text-success fw-bold' : 'text-muted'}">
+                        B. <span th:text="${q.optionB}">Option B</span> <span th:if="${q.correctOption == 'B'}">(✓ Đúng)</span>
+                    </div>
+                    <div class="col-md-6" th:classappend="${q.correctOption == 'C' ? 'text-success fw-bold' : 'text-muted'}">
+                        C. <span th:text="${q.optionC}">Option C</span> <span th:if="${q.correctOption == 'C'}">(✓ Đúng)</span>
+                    </div>
+                    <div class="col-md-6" th:classappend="${q.correctOption == 'D' ? 'text-success fw-bold' : 'text-muted'}">
+                        D. <span th:text="${q.optionD}">Option D</span> <span th:if="${q.correctOption == 'D'}">(✓ Đúng)</span>
+                    </div>
+                </div>
+
+                <div th:if="${q.explanation != null and !q.explanation.isBlank()}" class="p-2 bg-light rounded-3 small text-secondary">
+                    <strong class="text-dark"><i class="fa-solid fa-lightbulb text-warning me-1"></i> Giải thích:</strong> <span th:text="${q.explanation}">Giải thích...</span>
+                </div>
+            </div>
+
+            <div th:if="${#lists.isEmpty(questions)}" class="text-center py-5 text-muted card card-dino p-4 border-0">
+                <i class="fa-solid fa-circle-question fs-1 mb-2"></i>
+                <h5>Bài học này chưa có câu hỏi trắc nghiệm nào!</h5>
+                <p class="small">Bấm vào nút <strong>"Thêm Câu Hỏi Mới"</strong> để biên soạn bài test trắc nghiệm.</p>
+            </div>
+        </div>
+    </div>
+</main>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>

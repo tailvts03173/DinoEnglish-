@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/navbar :: head('Danh Sách Khóa Học - Dino English')}"></head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<main class="py-5">
+    <div class="container">
+        <!-- Header -->
+        <div class="text-center mb-5">
+            <h1 class="fw-bold">Lộ Trình Các Khóa Học Tiếng Anh</h1>
+            <p class="text-secondary max-w-xl mx-auto">Chọn trình độ phù hợp với năng lực hiện tại của bạn để bắt đầu hành trình chinh phục tiếng Anh cùng Dino!</p>
+
+            <!-- Filter Pills -->
+            <div class="d-flex flex-wrap justify-content-center gap-2 mt-4">
+                <a th:href="@{/courses}"
+                   th:class="${selectedLevel == null ? 'btn btn-dino' : 'btn btn-light rounded-pill border'}">
+                    Tất cả cấp độ
+                </a>
+                <a th:each="lvl : ${levels}"
+                   th:href="@{/courses(level=${lvl.name()})}"
+                   th:class="${selectedLevel == lvl.name() ? 'btn btn-dino' : 'btn btn-light rounded-pill border'}"
+                   th:text="${lvl.title}">
+                    Beginner (A1)
+                </a>
+            </div>
+        </div>
+
+        <!-- Course Grid -->
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-3" th:each="course : ${courses}">
+                <div class="card card-dino h-100">
+                    <div class="position-relative" style="height: 190px; overflow: hidden;">
+                        <img th:src="${course.imageUrl != null ? course.imageUrl : 'https://images.unsplash.com/photo-1546410531-bb4caa6b424d?auto=format&fit=crop&w=600&q=80'}"
+                             alt="Course thumbnail" class="w-100 h-100 object-fit-cover">
+                        <span class="position-absolute top-0 end-0 m-2 badge bg-success shadow-sm"
+                              th:text="${course.level.title}">Beginner (A1)</span>
+                    </div>
+                    <div class="card-body d-flex flex-column p-4">
+                        <h5 class="card-title fw-bold" th:text="${course.title}">Tên khóa học</h5>
+                        <p class="card-text text-secondary small flex-grow-1" th:text="${course.description}">
+                            Mô tả chi tiết khóa học...
+                        </p>
+                        <div class="d-flex justify-content-between align-items-center pt-3 border-top mt-3 small text-muted">
+                            <span><i class="fa-regular fa-clock me-1"></i> <span th:text="${course.durationHours}">24</span> giờ học</span>
+                            <span><i class="fa-solid fa-book-open me-1"></i> <span th:text="${course.lessons.size()}">4</span> bài học</span>
+                        </div>
+                        <a th:href="@{'/courses/' + ${course.slug}}" class="btn btn-dino w-100 mt-3">
+                            Xem Chi Tiết Khóa Học <i class="fa-solid fa-arrow-right ms-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div th:if="${#lists.isEmpty(courses)}" class="text-center py-5">
+            <i class="fa-solid fa-graduation-cap text-muted display-1 mb-3"></i>
+            <h4>Chưa có khóa học nào thuộc cấp độ này!</h4>
+            <p class="text-secondary">Dino đang tích cực biên soạn thêm bài giảng mới. Bạn hãy quay lại sau nhé!</p>
+            <a th:href="@{/courses}" class="btn btn-dino">Xem Tất Cả Khóa Học</a>
+        </div>
+    </div>
+</main>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>

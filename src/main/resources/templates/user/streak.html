@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/navbar :: head('Chuỗi Ngày Học (Streak) & Huy Hiệu - Dino English')}"></head>
+<body class="bg-light">
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<main class="py-5">
+    <div class="container">
+        <!-- Streak Banner -->
+        <div class="card card-dino p-5 text-center mb-5 border-0 shadow" style="background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);">
+            <div class="rounded-circle bg-white shadow-sm p-4 d-inline-flex mx-auto mb-3" style="width: 110px; height: 110px; align-items: center; justify-content: center;">
+                <i class="fa-solid fa-fire text-danger display-4" style="animation: flamePulse 1.5s infinite;"></i>
+            </div>
+            <h1 class="display-3 fw-black text-dark mb-1">
+                <span th:text="${user.currentStreak}">0</span> <span class="fs-2 text-danger">NGÀY STREAK</span>
+            </h1>
+            <p class="lead text-secondary mb-3" style="max-width: 600px; margin: 0 auto;">
+                Bạn đang duy trì chuỗi ngọn lửa học tập rất tốt! Mỗi ngày hoàn thành ít nhất 1 bài học để bảo vệ ngọn lửa không bị dập tắt nhé!
+            </p>
+            <div class="d-flex justify-content-center gap-3">
+                <span class="badge bg-white text-dark border px-3 py-2 fs-6 shadow-sm">
+                    <i class="fa-solid fa-crown text-warning me-1"></i> Chuỗi dài nhất: <strong th:text="${user.maxStreak}">0</strong> ngày
+                </span>
+                <span class="badge bg-white text-dark border px-3 py-2 fs-6 shadow-sm">
+                    <i class="fa-regular fa-calendar-check text-success me-1"></i> Học lần cuối: <strong th:text="${user.lastStudyDate != null ? #temporals.format(user.lastStudyDate, 'dd/MM/yyyy') : 'Chưa học'}">Hôm nay</strong>
+                </span>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <!-- Badges Shelf -->
+            <div class="col-lg-8">
+                <div class="card card-dino p-4">
+                    <h3 class="fw-bold mb-4 d-flex align-items-center justify-content-between">
+                        <span><i class="fa-solid fa-medal text-warning me-2"></i> Kho Huy Hiệu Thành Tích</span>
+                        <span class="badge bg-success-subtle text-success fs-6"
+                              th:text="${userBadges.size()} + ' / ' + ${allBadges.size()} + ' đã mở'">0 / 7</span>
+                    </h3>
+
+                    <div class="row g-4">
+                        <div class="col-md-6" th:each="b : ${allBadges}">
+                            <!-- Determine if user unlocked this badge -->
+                            <div th:with="isEarned=${#lists.contains(userBadges.![badge.id], b.id)}"
+                                 th:class="'p-4 rounded-4 border h-100 d-flex align-items-center gap-3 ' + ${isEarned ? 'bg-white shadow-sm border-warning' : 'bg-light opacity-50'}">
+                                <div class="rounded-circle p-3 d-flex align-items-center justify-content-center shadow-sm"
+                                     th:classappend="${isEarned ? 'bg-warning-subtle' : 'bg-secondary-subtle'}"
+                                     style="width: 64px; height: 64px; min-width: 64px;">
+                                    <i th:class="'fa-solid ' + ${b.iconClass} + ' fs-2'"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <div class="d-flex align-items-center justify-content-between mb-1">
+                                        <h6 class="fw-bold mb-0 text-dark" th:text="${b.title}">Tên Huy Hiệu</h6>
+                                        <span th:if="${isEarned}" class="badge bg-success-subtle text-success small">Đã đạt</span>
+                                        <span th:if="${!isEarned}" class="badge bg-secondary-subtle text-secondary small"><i class="fa-solid fa-lock me-1"></i> Khóa</span>
+                                    </div>
+                                    <p class="small text-muted mb-1" th:text="${b.description}">Mô tả huy hiệu...</p>
+                                    <span class="small fw-bold text-warning"><i class="fa-solid fa-star me-1"></i>+<span th:text="${b.xpBonus}">50</span> XP</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Top Streak Leaderboard -->
+            <div class="col-lg-4">
+                <div class="card card-dino p-4">
+                    <h5 class="fw-bold mb-3"><i class="fa-solid fa-fire text-danger me-2"></i> Bảng Vàng Siêu Streak</h5>
+                    <p class="small text-secondary mb-3">Những bạn học viên kiên trì nhất cộng đồng Dino English!</p>
+
+                    <div class="list-group list-group-flush gap-2">
+                        <div th:each="ts, iter : ${topStreaks}" class="list-group-item border-0 p-2 d-flex align-items-center justify-content-between rounded bg-light">
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="badge rounded-circle p-2"
+                                      th:classappend="${iter.index == 0 ? 'bg-danger text-white' : 'bg-light text-dark'}"
+                                      th:text="${iter.index + 1}">1</span>
+                                <img th:src="${ts.avatarUrl != null ? ts.avatarUrl : '/images/dino-logo.png'}"
+                                     alt="Avatar" class="rounded-circle" style="width: 32px; height: 32px; object-fit: cover;">
+                                <div>
+                                    <div class="fw-bold small" th:text="${ts.fullName}">Tên</div>
+                                    <div class="text-muted" style="font-size: 0.75rem;" th:text="${ts.getDinoRank()}">Baby Dino</div>
+                                </div>
+                            </div>
+                            <span class="streak-pill py-1 px-2 small">
+                                <i class="fa-solid fa-fire"></i> <span th:text="${ts.currentStreak}">0</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/navbar :: head(${lesson.title} + ' - Dino English')}"></head>
+<body class="bg-light">
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<!-- Alerts -->
+<div class="container mt-3" th:if="${successMessage != null}">
+    <div class="alert alert-success alert-dismissible fade show rounded-4 shadow-sm" role="alert">
+        <i class="fa-solid fa-circle-check me-2"></i>
+        <span th:text="${successMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+</div>
+
+<main class="py-4">
+    <div class="container">
+        <!-- Top Bar Navigation -->
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4 pb-3 border-bottom">
+            <div>
+                <a th:href="@{'/courses/' + ${course.slug}}" class="text-decoration-none text-muted small">
+                    <i class="fa-solid fa-arrow-left me-1"></i> Trở về khóa học: <strong th:text="${course.title}">Tên Khóa</strong>
+                </a>
+                <h3 class="fw-bold mb-1 mt-1" th:text="${lesson.title}">Bài 1: Thế Giới Động Vật Thân Quen</h3>
+                <div class="d-flex align-items-center gap-2 small">
+                    <span class="badge bg-light text-dark border">
+                        <i th:class="'fa-solid ' + ${lesson.lessonType.icon} + ' me-1 ' + ${lesson.lessonType.colorClass}"></i>
+                        <span th:text="${lesson.lessonType.title}">Từ vựng</span>
+                    </span>
+                    <span class="text-warning fw-bold"><i class="fa-solid fa-star me-1"></i>+<span th:text="${lesson.xpReward}">20</span> XP</span>
+                    <span th:if="${isCompleted}" class="badge bg-success-subtle text-success">
+                        <i class="fa-solid fa-check me-1"></i> Đã hoàn thành
+                    </span>
+                </div>
+            </div>
+
+            <div class="d-flex gap-2">
+                <a th:if="${prevLesson != null}" th:href="@{'/user/lesson/' + ${prevLesson.id}}" class="btn btn-outline-secondary rounded-pill btn-sm">
+                    <i class="fa-solid fa-chevron-left me-1"></i> Bài Trước
+                </a>
+                <a th:if="${nextLesson != null}" th:href="@{'/user/lesson/' + ${nextLesson.id}}" class="btn btn-dino rounded-pill btn-sm">
+                    Bài Sau <i class="fa-solid fa-chevron-right ms-1"></i>
+                </a>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <!-- Main Content Area -->
+            <div class="col-lg-8">
+                <!-- If Lesson Type is QUIZ -->
+                <div th:if="${lesson.lessonType.name() == 'QUIZ'}" class="card card-dino p-5 text-center mb-4">
+                    <img th:src="@{/images/dino-logo.png}" alt="Dino Mascot" style="height: 120px;" class="mx-auto mb-3">
+                    <h3 class="fw-bold mb-2">Thử Thách Trắc Nghiệm Cùng Dino!</h3>
+                    <p class="text-secondary max-w-lg mx-auto mb-4" th:text="${lesson.description}">
+                        Hãy chuẩn bị tâm lý tự tin để hoàn thành bài tập kiểm tra trắc nghiệm và nhận phần thưởng XP nhé!
+                    </p>
+                    <div>
+                        <a th:href="@{'/user/quiz/' + ${lesson.id}}" class="btn btn-dino btn-lg px-5">
+                            <i class="fa-solid fa-circle-play me-2"></i> Bắt Đầu Làm Bài Kiểm Tra Ngay
+                        </a>
+                    </div>
+                </div>
+
+                <!-- If Lesson has VOCABULARIES (Interactive Flashcards) -->
+                <div th:if="${!#lists.isEmpty(vocabularies)}" class="mb-5">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4 class="fw-bold mb-0">
+                            <i class="fa-solid fa-clone text-dino-green me-2"></i> Thẻ Học Từ Vựng Flashcards
+                        </h4>
+                        <span class="small text-muted"><i class="fa-solid fa-hand-pointer me-1"></i> Bấm vào thẻ để lật mặt</span>
+                    </div>
+
+                    <!-- Flashcard Carousel / Stack -->
+                    <div class="row g-4">
+                        <div class="col-md-6" th:each="vocab, iter : ${vocabularies}">
+                            <div class="flashcard card-dino" style="height: 320px;" onclick="toggleFlashcard(this)">
+                                <!-- FRONT FACE -->
+                                <div class="flashcard-face flashcard-front text-center">
+                                    <span class="badge bg-light text-dark border position-absolute top-0 start-0 m-3"
+                                          th:text="${iter.index + 1} + '/' + ${vocabularies.size()}">1/6</span>
+                                    <span class="badge bg-success-subtle text-success position-absolute top-0 end-0 m-3"
+                                          th:text="${vocab.partOfSpeech}">noun</span>
+
+                                    <img th:if="${vocab.imageUrl != null}" th:src="${vocab.imageUrl}"
+                                         alt="Word image" class="rounded-4 mb-3 shadow-sm"
+                                         style="width: 110px; height: 110px; object-fit: cover;">
+
+                                    <div class="d-flex align-items-center justify-content-center gap-2 mb-1">
+                                        <h3 class="fw-bold text-dark mb-0" th:text="${vocab.word}">Elephant</h3>
+                                        <!-- Audio Speaker Button -->
+                                        <button type="button" class="btn-speaker"
+                                                th:data-word="${vocab.word}"
+                                                onclick="event.stopPropagation(); speakWord(this.dataset.word);"
+                                                title="Nghe phát âm chuẩn US">
+                                            <i class="fa-solid fa-volume-high"></i>
+                                        </button>
+                                    </div>
+                                    <div class="text-secondary small fst-italic" th:text="${vocab.phonetic}">/ˈel.ɪ.fənt/</div>
+                                    <div class="mt-3 small text-muted"><i class="fa-solid fa-repeat me-1"></i> Lật xem nghĩa tiếng Việt</div>
+                                </div>
+
+                                <!-- BACK FACE -->
+                                <div class="flashcard-face flashcard-back text-center">
+                                    <div class="rounded-circle bg-dino-soft p-3 d-inline-flex mx-auto mb-2 text-dino-dark-green">
+                                        <i class="fa-solid fa-language fs-3"></i>
+                                    </div>
+                                    <h4 class="fw-bold text-dino-dark-green mb-1" th:text="${vocab.meaningVi}">Con voi</h4>
+                                    <div class="p-3 bg-white rounded-3 border w-100 mt-2 text-start small">
+                                        <div class="fw-bold text-dark mb-1">
+                                            <i class="fa-solid fa-quote-left text-muted me-1"></i>
+                                            <span th:text="${vocab.exampleEn}">The elephant is big.</span>
+                                        </div>
+                                        <div class="text-secondary fst-italic" th:text="${vocab.exampleVi}">Con voi rất to lớn.</div>
+                                    </div>
+                                    <div class="mt-3 small text-muted"><i class="fa-solid fa-repeat me-1"></i> Bấm để lật lại</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Text Content / Notes / Grammar Guide -->
+                <div class="card card-dino p-4 mb-4" th:if="${lesson.content != null and !lesson.content.isBlank()}">
+                    <h4 class="fw-bold mb-3"><i class="fa-solid fa-book-open text-primary me-2"></i> Nội Dung Bài Học</h4>
+                    <div class="p-3 bg-light rounded-3" style="white-space: pre-line; line-height: 1.7;" th:text="${lesson.content}">
+                        Nội dung bài học chi tiết...
+                    </div>
+                </div>
+
+                <!-- Complete Lesson Action Card -->
+                <div class="card card-dino p-4 text-center border-0 bg-white shadow-sm mb-4">
+                    <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
+                        <div class="text-md-start">
+                            <h5 class="fw-bold mb-1">Bạn đã nắm chắc bài học này?</h5>
+                            <p class="text-secondary small mb-0">Hoàn thành để nhận +<span th:text="${lesson.xpReward}">20</span> XP và duy trì chuỗi Streak hôm nay!</p>
+                        </div>
+                        <div>
+                            <form th:action="@{'/user/lesson/' + ${lesson.id} + '/complete'}" method="post">
+                                <button type="submit" class="btn btn-dino btn-lg px-4" th:disabled="${isCompleted}">
+                                    <i class="fa-solid fa-circle-check me-2"></i>
+                                    <span th:text="${isCompleted ? 'Đã Hoàn Thành Bài Này' : 'Hoàn Thành Bài Học (+XP)'}">Hoàn thành</span>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar: Syllabus Progress -->
+            <div class="col-lg-4">
+                <div class="card card-dino p-4 sticky-top" style="top: 90px;">
+                    <h5 class="fw-bold mb-3 d-flex justify-content-between align-items-center">
+                        <span>Danh Sách Bài Học</span>
+                        <span class="badge bg-light text-secondary" th:text="${courseLessons.size()} + ' bài'">0</span>
+                    </h5>
+
+                    <div class="list-group list-group-flush gap-2">
+                        <a th:each="cl : ${courseLessons}"
+                           th:href="@{'/user/lesson/' + ${cl.id}}"
+                           th:class="'list-group-item list-group-item-action border rounded-3 p-3 d-flex align-items-center justify-content-between ' + ${cl.id == lesson.id ? 'bg-dino-soft border-success' : ''}">
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="badge rounded-circle p-2"
+                                      th:classappend="${completedIds.contains(cl.id) ? 'bg-success text-white' : 'bg-light text-dark'}"
+                                      th:text="${cl.orderIndex}">1</span>
+                                <div>
+                                    <div class="fw-bold small" th:text="${cl.title}">Tên bài</div>
+                                    <span class="text-muted" style="font-size: 0.75rem;" th:text="${cl.lessonType.title}">Loại</span>
+                                </div>
+                            </div>
+                            <i th:if="${completedIds.contains(cl.id)}" class="fa-solid fa-check text-success"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>
